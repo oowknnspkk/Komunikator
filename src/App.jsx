@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="container">
       <h1>Komunikator</h1>
-      <input type="text:></input>
+      <input type="text"></input>
     </div>
   )
 }
