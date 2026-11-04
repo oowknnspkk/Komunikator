@@ -39,7 +39,7 @@ function Login() {
   return (
     <div className="LoginPage">
       <div className="register-card">
-        <div className="logo">PDF</div>
+        <div className="logo">PDF Komunikator</div>
 
         <h1>Witaj ponownie!</h1>
 
