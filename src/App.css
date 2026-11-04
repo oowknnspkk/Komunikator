@@ -143,6 +143,10 @@ p1{
   font-size: 23px;
 }
 .LoginPage{
-  background-color: #03396C;
+  min-height: 100vh;
   display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+
 }
