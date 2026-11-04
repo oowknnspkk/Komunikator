@@ -86,7 +86,7 @@ function App() {
         </form>
 
         <p className="login-text">
-          Masz już konto?<a href="/login">Zaloguj się</a>
+          Masz już konto?<a href="Login.jsx">Zaloguj się</a>
         </p>
 
       </div>
