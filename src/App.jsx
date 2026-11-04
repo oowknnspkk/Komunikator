@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom'
 
 import { supabase } from './supabaseClient'
+import MainIndex from './MainIndex'
 import Login from './Login'
 import './App.css'
 
@@ -104,6 +105,7 @@ function App() {
         <Route path="/" element={<Register />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/main" element={<MainIndex />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
