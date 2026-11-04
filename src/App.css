@@ -30,13 +30,10 @@ body {
 }
 
 .logo {
-  /*color: #60a5fa;*/
-  
-  color: #fff; 
+  color: #60a5fa;
   font-size: 40px;
   font-weight: bold;
   text-align: center;
-  background-color: #111; 
   text-shadow: 
     0 0 5px #fff,    
     0 0 10px #00d2ff,   
