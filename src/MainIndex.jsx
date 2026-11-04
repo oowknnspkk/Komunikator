@@ -6,8 +6,8 @@ function MainIndex() {
 
   return (
     <div className="main-page">
-     <h1>PDF - Komunikator :3</h1>
-     <p>Witaj drogi uzytkowniku w komunikatorze internetowym na nazwie "PDF"</p>
+     <h1 id="Info">PDF - Komunikator :3</h1>
+     <p id="p1">Witaj drogi uzytkowniku w komunikatorze internetowym na nazwie "PDF"</p>
     </div>
   )
 }
