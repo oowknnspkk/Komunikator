@@ -1,9 +1,11 @@
 
 import { useState } from 'react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { supabase } from './supabaseClient'
+import Login from './Login'
 import './App.css'
 
-function App() {
+function Register() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -19,8 +21,8 @@ function App() {
 
     try {
       const { data, error } = await supabase.auth.signUp({
-        email: email,
-        password: password,
+        email,
+        password,
       })
 
       if (error) throw error
@@ -46,6 +48,7 @@ function App() {
         <div className="logo">MY APP</div>
 
         <h1>Utwórz konto</h1>
+
         <p className="subtitle">
           Zarejestruj się, aby rozpocząć
         </p>
@@ -53,6 +56,7 @@ function App() {
         <form onSubmit={handleRegister}>
 
           <label>Adres e-mail</label>
+
           <input
             type="email"
             placeholder="twoj@email.com"
@@ -62,6 +66,7 @@ function App() {
           />
 
           <label>Hasło</label>
+
           <input
             type="password"
             placeholder="Minimum 6 znaków"
@@ -86,11 +91,26 @@ function App() {
         </form>
 
         <p className="login-text">
+<<<<<<< HEAD
           Masz już konto?<a href="Login.jsx">Zaloguj się</a>
+=======
+          Masz już konto? <Link to="/login">Zaloguj się</Link>
+>>>>>>> 88ef41f (Zmiany dodanie router i edycja jsx)
         </p>
 
       </div>
     </div>
+  )
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
