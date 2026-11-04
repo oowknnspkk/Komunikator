@@ -37,9 +37,9 @@ function Login() {
   }
 
   return (
-    <div className="page">
+    <div className="LoginPage">
       <div className="register-card">
-        <div className="logo">MY APP</div>
+        <div className="logo">PDF</div>
 
         <h1>Witaj ponownie!</h1>
 
