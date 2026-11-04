@@ -5,11 +5,14 @@ function MainIndex() {
   const [name, setName] = useState('Chaos')
 
   return (
-    <div className="main-page">
-      <h1>Witaj w PDF komunikator (lepszej nazwy nie wymyśliłem XD)</h1>
-     <div className="PDFbox">
-     <input type="text" class="InputT" placeholder="Wpisz cos..."></input>
-     </div>
+     <div class="main-page">
+        <div class="PDFbox">
+            <div class="MessageBox">
+                s
+            </div>
+            <input type="text" id="InputT" placeholder="Wpisz cos...">
+            <button id="Send">Wyślij wiadomość</button>
+        </div>
     </div>
   )
 }
