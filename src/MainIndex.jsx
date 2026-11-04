@@ -6,6 +6,7 @@ function MainIndex() {
 
   return (
     <div className="main-page">
+      <h1>Witaj w PDF komunikator (lepszej nazwy nie wymyśliłem XD)</h1>
      <div className="PDFbox">
      <input type="text" class="InputT" placeholder="Wpisz cos..."></input>
      </div>
