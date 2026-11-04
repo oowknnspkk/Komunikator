@@ -52,7 +52,7 @@ function Register() {
   return (
     <div className="page">
       <div className="register-card">
-        <div className="logo">MY APP</div>
+        <div className="logo">PDF</div>
 
         <h1>Utwórz konto</h1>
 
