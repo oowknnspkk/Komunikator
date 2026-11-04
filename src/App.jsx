@@ -10,7 +10,7 @@ function App() {
   return (
     <div className="container">
       <h1>Komunikator</h1>
-      <button>Click</button>
+      <input type="text"></input>
     </div>
   )
 }
