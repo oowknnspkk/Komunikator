@@ -1,6 +1,13 @@
 
 import { useState } from 'react'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+  Navigate
+} from 'react-router-dom'
+
 import { supabase } from './supabaseClient'
 import Login from './Login'
 import './App.css'
@@ -44,7 +51,6 @@ function Register() {
   return (
     <div className="page">
       <div className="register-card">
-
         <div className="logo">MY APP</div>
 
         <h1>Utwórz konto</h1>
@@ -54,7 +60,6 @@ function Register() {
         </p>
 
         <form onSubmit={handleRegister}>
-
           <label>Adres e-mail</label>
 
           <input
@@ -76,28 +81,17 @@ function Register() {
             required
           />
 
-          {error && (
-            <div className="error">{error}</div>
-          )}
-
-          {message && (
-            <div className="success">{message}</div>
-          )}
+          {error && <div className="error">{error}</div>}
+          {message && <div className="success">{message}</div>}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Tworzenie konta...' : 'Zarejestruj się'}
           </button>
-
         </form>
 
         <p className="login-text">
-<<<<<<< HEAD
-          Masz już konto?<a href="Login.jsx">Zaloguj się</a>
-=======
           Masz już konto? <Link to="/login">Zaloguj się</Link>
->>>>>>> 88ef41f (Zmiany dodanie router i edycja jsx)
         </p>
-
       </div>
     </div>
   )
@@ -108,7 +102,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Register />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )
