@@ -8,15 +8,15 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-      <div>
-        <h1>Witaj w React!</h1>
-        <p>Licznik: {count}</p>
-        <button onClick={() => setCount(count + 1)}>
-          Dodaj
-        </button>
-      </div>
-    </>
+    <div className="container">
+      <h1 className="title">Witaj w React!</h1>
+
+      <p>Licznik: {count}</p>
+
+      <button onClick={() => setCount(count + 1)}>
+        Dodaj
+      </button>
+    </div>
   )
 }
 
