@@ -9,13 +9,8 @@ function App() {
 
   return (
     <div className="container">
-      <h1 className="title">Witaj w React!</h1>
-
-      <p>Licznik: {count}</p>
-
-      <button onClick={() => setCount(count + 1)}>
-        Dodaj
-      </button>
+      <h1>Komunikator</h1>
+      <input type="text:></input>
     </div>
   )
 }
