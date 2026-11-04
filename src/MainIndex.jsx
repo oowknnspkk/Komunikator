@@ -8,7 +8,7 @@ function MainIndex() {
      <div class="main-page">
         <div class="PDFbox">
             <div class="MessageBox">
-                s
+                
             </div>
             <input type="text" id="InputT" placeholder="Wpisz cos...">
             <button id="Send">Wyślij wiadomość</button>
