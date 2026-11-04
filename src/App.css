@@ -37,7 +37,11 @@ body {
   font-weight: bold;
   text-align: center;
   background-color: #111; 
-  
+  text-shadow: 
+    0 0 5px #fff,    
+    0 0 10px #00d2ff,   
+    0 0 20px #00d2ff,    
+    0 0 40px #00d2ff;    
   padding: 20px;
   font-size: 22px;
   font-weight: bold;
