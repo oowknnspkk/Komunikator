@@ -9,6 +9,15 @@ function App() {
 
   return (
     <>
-      
+      <div>
+        <h1>Witaj w React!</h1>
+        <p>Licznik: {count}</p>
+        <button onClick={() => setCount(count + 1)}>
+          Dodaj
+        </button>
+      </div>
+    </>
+  )
+}
 
 export default App
