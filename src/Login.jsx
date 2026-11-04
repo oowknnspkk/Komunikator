@@ -1,5 +1,6 @@
 
 import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import './App.css'
 
@@ -7,14 +8,14 @@ function Login() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+
+  const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault()
 
     setLoading(true)
-    setMessage('')
     setError('')
 
     try {
@@ -26,10 +27,7 @@ function Login() {
       if (error) throw error
 
       if (data.user) {
-        setMessage('Zalogowano pomyślnie!')
-
-        // Tutaj później przekierujemy użytkownika
-        // do głównego ekranu komunikatora.
+        navigate('/chat')
       }
     } catch (err) {
       setError(err.message)
@@ -41,7 +39,6 @@ function Login() {
   return (
     <div className="page">
       <div className="register-card">
-
         <div className="logo">MY APP</div>
 
         <h1>Witaj ponownie!</h1>
@@ -51,8 +48,8 @@ function Login() {
         </p>
 
         <form onSubmit={handleLogin}>
-
           <label>Adres e-mail</label>
+
           <input
             type="email"
             placeholder="twoj@email.com"
@@ -62,6 +59,7 @@ function Login() {
           />
 
           <label>Hasło</label>
+
           <input
             type="password"
             placeholder="Wpisz swoje hasło"
@@ -70,25 +68,17 @@ function Login() {
             required
           />
 
-          {error && (
-            <div className="error">{error}</div>
-          )}
-
-          {message && (
-            <div className="success">{message}</div>
-          )}
+          {error && <div className="error">{error}</div>}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Logowanie...' : 'Zaloguj się'}
           </button>
-
         </form>
 
         <p className="login-text">
           Nie masz jeszcze konta?{' '}
-          <a href="/register">Zarejestruj się</a>
+          <Link to="/register">Zarejestruj się</Link>
         </p>
-
       </div>
     </div>
   )
