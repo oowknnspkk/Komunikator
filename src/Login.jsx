@@ -27,7 +27,7 @@ function Login() {
       if (error) throw error
 
       if (data.user) {
-        navigate('/chat')
+        navigate('/main')
       }
     } catch (err) {
       setError(err.message)
