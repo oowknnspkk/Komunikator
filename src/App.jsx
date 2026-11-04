@@ -52,7 +52,7 @@ function Register() {
   return (
     <div className="page">
       <div className="register-card">
-        <div className="logo">PDF</div>
+        <div className="logo">PDF Komunikator</div>
 
         <h1>Utwórz konto</h1>
 
