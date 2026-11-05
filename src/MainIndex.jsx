@@ -73,10 +73,9 @@ function MainIndex() {
       <div class="LeftBox">
           <p>Panel głowny</p>
         <div class="FriendsList">
-        <p>Example</p> 
-        <p>Example</p>
-        <p>Example</p>
-        <p>Example</p>
+        <h3>Example</h3> 
+       <h3>Example</h3> 
+          <h3>Example</h3> 
       </div>
       </div>
     </div>
