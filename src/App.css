@@ -289,8 +289,9 @@ body {
 
 }
 .FriendsList{
-   background-color: #1d3c5d;
+   background-color: #2472c5;
+   border-radius: 12px;
    display: grid;
   place-items: center;     
-  height: 300px;           
+  height: auto;           
 }
