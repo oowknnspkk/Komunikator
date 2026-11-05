@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import './App.css'
+import { useNavigate } from 'react-router-dom';
 
 function MainIndex() {
   const [name, setName] = useState('Chaos')
-
+  const handleLogin = () => {
+    navigate('/Login');
+  }
   return (
      <div class="main-page">
-       <button>Wyloguj sie</button>
+       <button onclick={handleLogin}>Wyloguj sie</button>
           <center><h1>PDF komunikator</h1></center>
         <div class="PDFbox">
           
