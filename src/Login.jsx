@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
-import './App.css'
+import './RL.css'
 
 function Login() {
   const [email, setEmail] = useState('')
