@@ -70,6 +70,15 @@ function MainIndex() {
         </button>
 
       </div>
+      <div class="LeftBox">
+          <p>Panel głowny</p>
+        <div class="FriendsList">
+        <p>Example</p> 
+        <p>Example</p>
+        <p>Example</p>
+        <p>Example</p>
+      </div>
+      </div>
     </div>
   );
 }
