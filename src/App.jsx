@@ -10,7 +10,7 @@ import {
 import { supabase } from './supabaseClient'
 import MainIndex from './MainIndex'
 import Login from './Login'
-import './App.css'
+import './RL.css'
 
 function Register() {
   const [email, setEmail] = useState('')
