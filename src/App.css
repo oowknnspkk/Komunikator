@@ -276,7 +276,7 @@ body {
   width: 230px;
   height: 700px;
   padding: 20px;
-  background-color: #023e8a;
+  background-color: #023d8ab6;
   border-radius: 12px;
   border-top: 5px solid #48cae4;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
@@ -297,7 +297,7 @@ body {
 }
 
 .FriendsList {
-  background-color: #0077b6;
+  background-color: #0076b6;
   border: 1px solid #48cae4;
   border-radius: 10px;
   display: grid;
