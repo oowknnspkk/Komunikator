@@ -271,11 +271,11 @@ body {
 /* LEWY PANEL */
 .LeftBox{
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 20px;
+  top: 20px;
    background-color: #0077b6;
-   width:70px;
-   height: 100px;
+   width:143px;
+   height: 200px;
 }
 .FriendList{
    
