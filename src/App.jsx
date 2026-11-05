@@ -93,6 +93,9 @@ function Register() {
         <p className="login-text">
           Masz już konto? <Link to="/login">Zaloguj się</Link>
         </p>
+        <Link to="/change-password">
+  Zmień hasło
+</Link>
       </div>
     </div>
   )
