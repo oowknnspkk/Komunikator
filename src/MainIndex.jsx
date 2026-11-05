@@ -74,9 +74,9 @@ function MainIndex() {
           <p>Panel głowny</p>
           <h1>Znajomi:</h1>
         <div class="FriendsList">
-        <h3>Example</h3> 
-       <h3>Example</h3> 
-          <h3>Example</h3> 
+        <h3>Nigger</h3> 
+       <h3>Cwel</h3> 
+          <h3>Kamil Łobaza</h3> 
       </div>
       </div>
     </div>
