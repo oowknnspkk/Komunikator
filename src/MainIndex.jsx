@@ -1,19 +1,26 @@
 import { useState } from 'react';
 import './App.css';
 import { useNavigate, Link } from 'react-router-dom'; 
+import { supabase } from './supabaseClient';
 
 function MainIndex() {
-  const [name, setName] = useState('Chaos');
+  
   const navigate = useNavigate(); 
 
-  const handleLogin = () => {
-    navigate('/Login');
+  const handleLogout = async () => {
+    const{error} = await supabase.auth.signOut();
+
+    if(error){
+      console.error(error.message);
+      return;
+    }
+    navigate('/login')
   };
 
   return (
    
     <div className="main-page"> 
-      <Link to="/register">Wyloguj sie</Link>
+     <button onClick={handleLogout}>Wyloguj się</button>
       
       <center><h1>PDF komunikator</h1></center>
       
