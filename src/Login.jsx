@@ -1,5 +1,4 @@
-
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import './RL.css'
@@ -11,6 +10,18 @@ function Login() {
   const [error, setError] = useState('')
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await supabase.auth.getSession()
+
+      if (data.session) {
+        navigate('/main', { replace: true })
+      }
+    }
+
+    checkSession()
+  }, [navigate])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -27,7 +38,7 @@ function Login() {
       if (error) throw error
 
       if (data.user) {
-        navigate('/main')
+        navigate('/main', { replace: true })
       }
     } catch (err) {
       setError(err.message)
@@ -84,4 +95,4 @@ function Login() {
   )
 }
 
-export default Login
+export default Login;
