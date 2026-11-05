@@ -1,246 +1,236 @@
 
-:root {
-  /* Colors */
-  --text: #686274;
-  --text-h: #171321;
-  --bg: #ffffff;
-  --border: #eae8ef;
-  --code-bg: #f6f4fa;
-
-  --accent: #9333ea;
-  --accent-hover: #7e22ce;
-  --accent-bg: rgba(147, 51, 234, 0.08);
-  --accent-border: rgba(147, 51, 234, 0.3);
-
-  --social-bg: #f7f5fa;
-
-  /* Shadows */
-  --shadow:
-    0 10px 30px rgba(30, 20, 50, 0.06),
-    0 2px 8px rgba(30, 20, 50, 0.03);
-
-  --shadow-hover:
-    0 16px 40px rgba(30, 20, 50, 0.1),
-    0 4px 12px rgba(30, 20, 50, 0.05);
-
-  /* Typography */
-  --sans: Inter, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, sans-serif;
-
-  --heading: Inter, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, sans-serif;
-
-  --mono: "SFMono-Regular", Consolas, monospace;
-
-  /* Layout */
-  --radius: 12px;
-  --radius-lg: 18px;
-  --transition: 180ms ease;
-
-  font-family: var(--sans);
-  font-size: 17px;
-  line-height: 1.65;
-  letter-spacing: -0.15px;
-
-  color: var(--text);
-  background: var(--bg);
-  color-scheme: light;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #a5a1b2;
-    --text-h: #f5f3fa;
-    --bg: #121118;
-    --border: #292532;
-    --code-bg: #201d29;
-
-    --accent: #c084fc;
-    --accent-hover: #d8b4fe;
-    --accent-bg: rgba(192, 132, 252, 0.12);
-    --accent-border: rgba(192, 132, 252, 0.35);
-
-    --social-bg: #1c1923;
-
-    --shadow:
-      0 10px 30px rgba(0, 0, 0, 0.25),
-      0 2px 8px rgba(0, 0, 0, 0.15);
-
-    --shadow-hover:
-      0 16px 40px rgba(0, 0, 0, 0.4);
-
-    color-scheme: dark;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-}
-
-/* Global */
 * {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  min-width: 320px;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #011f4b, #005b96);
+
+  color: white;
+}
+
+.page {
   min-height: 100vh;
-  background: var(--bg);
-}
-
-/* Main container */
-#root {
-  width: 1126px;
-  max-width: 100%;
-  min-height: 100svh;
-  margin: 0 auto;
-
   display: flex;
-  flex-direction: column;
-
-  text-align: center;
-
-  border-inline: 1px solid var(--border);
-  background: var(--bg);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-/* Headings */
-h1,
-h2 {
-  font-family: var(--heading);
-  color: var(--text-h);
-  font-weight: 600;
-  line-height: 1.15;
+.register-card {
+  width: 100%;
+  max-width: 420px;
+  background: #1e293b;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+  font-size: clamp(20px, 4vw, 32px);
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+  background: linear-gradient(90deg, #60a5fa, #00d2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  margin-bottom: 30px;
 }
 
 h1 {
-  max-width: 900px;
-  margin: 40px auto 32px;
-
-  font-size: clamp(36px, 5vw, 56px);
-  letter-spacing: -2px;
-  line-height: 1.08;
+  font-size: 30px;
+  margin-bottom: 10px;
 }
 
-h2 {
-  margin: 0 0 12px;
-
-  font-size: 24px;
-  letter-spacing: -0.6px;
+.subtitle {
+  color: #94a3b8;
+  margin-bottom: 30px;
 }
 
-/* Paragraphs */
-p {
-  margin: 0;
-  line-height: 1.7;
+form {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Code */
-code,
-.counter {
-  display: inline-flex;
-  align-items: center;
-
-  font-family: var(--mono);
-  color: var(--text-h);
-
-  border-radius: 6px;
+label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: bold;
 }
 
-code {
-  padding: 5px 9px;
-
-  background: var(--code-bg);
-  border: 1px solid var(--border);
-
-  font-size: 0.85em;
-  line-height: 1.5;
+input {
+  padding: 14px;
+  margin-bottom: 22px;
+  border: 1px solid #334155;
+  border-radius: 9px;
+  background: #0f172a;
+  color: white;
+  font-size: 15px;
+  outline: none;
 }
 
-/* Links */
-a {
-  color: var(--accent);
+input:focus {
+  border-color: #3b82f6;
+}
+
+input::placeholder {
+  color: #64748b;
+}
+
+button {
+  padding: 15px;
+  border: none;
+  border-radius: 9px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #1d4ed8;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.error,
+.success {
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.error {
+  background: #7f1d1d;
+  color: #fecaca;
+}
+
+.success {
+  background: #14532d;
+  color: #bbf7d0;
+}
+
+.login-text {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 25px;
+}
+
+.login-text a {
+  color: #60a5fa;
   text-decoration: none;
-  text-underline-offset: 4px;
-  transition: color var(--transition);
 }
 
-a:hover {
-  color: var(--accent-hover);
+.login-text a:hover {
   text-decoration: underline;
 }
 
-/* Buttons */
-button {
-  font: inherit;
-  cursor: pointer;
-  transition:
-    background var(--transition),
-    border-color var(--transition),
-    transform var(--transition),
-    box-shadow var(--transition);
-}
-
-button:focus-visible,
-a:focus-visible {
-  outline: 3px solid var(--accent-border);
-  outline-offset: 3px;
-}
-
-/* Selection */
-::selection {
-  color: var(--text-h);
-  background: var(--accent-bg);
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  :root {
-    font-size: 16px;
-  }
-
-  h1 {
-    margin: 28px 20px 24px;
-    letter-spacing: -1.2px;
-  }
-
-  h2 {
-    font-size: 21px;
+@media (max-width: 480px) {
+  .register-card {
+    padding: 28px 22px;
   }
 }
 
-@media (max-width: 600px) {
-  #root {
-    border-inline: none;
-  }
-
-  h1 {
-    font-size: 36px;
-    letter-spacing: -1px;
-  }
-
-  h2 {
-    font-size: 20px;
-  }
-
-  code {
-    font-size: 13px;
-    overflow-wrap: anywhere;
-  }
+p1{
+  color: #94a3b8;
+  font-size: 23px;
 }
+.LoginPage{
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    scroll-behavior: auto !important;
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
 }
+  .PDFbox {
+            background-color: #1d44a8d6;
+            width: 600px;
+            height: 600px;
+            border-radius: 12px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .main-page {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #InputT,
+        #Send {
+            font-family: inherit;
+            font-size: 15px;
+            padding: 12px 18px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background-color: rgba(255, 255, 255, 0.12);
+            color: #e0f7ff;
+            outline: none;
+            transition: border-color 0.5s, background-color 0.5s, box-shadow 0.5s, transform 0.5s;
+        }
+
+        #InputT {
+            width: 80%;
+            box-sizing: border-box;
+        }
+
+        #InputT::placeholder {
+            color: rgba(224, 247, 255, 0.5);
+        }
+
+        #InputT:focus {
+            border-color: #60a5fa;
+            background-color: rgba(255, 255, 255, 0.18);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+        }
+
+        #Send {
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            background: linear-gradient(135deg, #3b82f6, #06b6d4);
+            border: none;
+            color: #fff;
+        }
+
+        #InputT:hover {
+            border-color: #60a5fa;
+            background: linear-gradient(135deg, #2563eb, #0891b2);
+            box-shadow: 0 4px 14px rgba(6, 182, 212, 0.4);
+        }
+
+
+
+        .MessageBox {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            width: 80%;
+            padding: 20px;
+            color: #fff;
+        }
