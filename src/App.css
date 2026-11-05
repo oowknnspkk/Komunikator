@@ -273,6 +273,9 @@ body {
   position: absolute;
   left: 0;
   top: 0;
+   background-color: #0077b6;
+   width:70px;
+   height: 100px;
 }
 .FriendList{
    
