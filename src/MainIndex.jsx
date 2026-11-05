@@ -9,7 +9,7 @@ function MainIndex() {
   }
   return (
      <div class="main-page">
-       <button onclick={handleLogin}>Wyloguj sie</button>
+       <Link to="/register">Wyloguj sie</Link>
           <center><h1>PDF komunikator</h1></center>
         <div class="PDFbox">
           
