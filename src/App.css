@@ -274,12 +274,17 @@ body {
   left: 20px;
   top: 20px;
    background-color: #0077b6;
-   width:160px;
+   width: 170px;
    height: 700px;
    border-radius: 12px;
 }
 .LeftBox p{
    font-size: 40px;
+   color: #03045e;
+}
+.LeftBox h3{
+   top: 12px;
+   font-size: 20px;
    color: #03045e;
 }
 .FriendList{
