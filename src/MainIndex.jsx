@@ -6,9 +6,10 @@ function MainIndex() {
 
   return (
      <div class="main-page">
-        <div class="PDFbox">
-          <button>Wyloguj sie</button>
+       <button>Wyloguj sie</button>
           <center><h1>PDF komunikator</h1></center>
+        <div class="PDFbox">
+          
             <div class="MessageBox">
                 
             </div>
