@@ -72,6 +72,7 @@ function MainIndex() {
       </div>
       <div class="LeftBox">
           <p>Panel głowny</p>
+          <h1>Znajomi:</h1>
         <div class="FriendsList">
         <h3>Example</h3> 
        <h3>Example</h3> 
