@@ -275,7 +275,12 @@ body {
   top: 20px;
    background-color: #0077b6;
    width:143px;
-   height: 200px;
+   height: 700px;
+   border-radius: 12px;
+}
+.LeftBox p{
+   font-size: 70px;
+   color: #03045e;
 }
 .FriendList{
    
