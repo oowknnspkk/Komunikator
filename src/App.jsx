@@ -11,6 +11,7 @@ import { supabase } from './supabaseClient'
 import MainIndex from './MainIndex'
 import Login from './Login'
 import './RL.css'
+import ChangePassword from './ChangePassword'
 
 function Register() {
   const [email, setEmail] = useState('')
@@ -106,6 +107,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/main" element={<MainIndex />} />
         <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/change-password" element={<ChangePassword />} />
       </Routes>
     </BrowserRouter>
   )
