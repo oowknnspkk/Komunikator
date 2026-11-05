@@ -270,7 +270,9 @@ body {
 }
 /* LEWY PANEL */
 .LeftBox{
-   display: Left;
+  position: absolute;
+  left: 0;
+  top: 0;
 }
 .FriendList{
    
