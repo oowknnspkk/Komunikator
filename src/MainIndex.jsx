@@ -10,7 +10,7 @@ function MainIndex() {
             <div class="MessageBox">
                 
             </div>
-            <input type="text" id="InputT" placeholder="Wpisz cos...">
+            <input type="text" id="InputT" placeholder="Wpisz cos..."></input>
             <button id="Send">Wyślij wiadomość</button>
         </div>
     </div>
