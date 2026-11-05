@@ -277,6 +277,7 @@ body {
    width: 230px;
    height: 700px;
    border-radius: 12px;
+   border-top: #293747 solid 6px;
 }
 .LeftBox p{
    font-size: 40px;
