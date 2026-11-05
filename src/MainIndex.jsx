@@ -21,7 +21,7 @@ function MainIndex() {
       return;
     }
 
-    navigate('/main', { replace: true });
+    navigate('/login', { replace: true });
 
   } catch (err) {
     console.error('Błąd:', err);
