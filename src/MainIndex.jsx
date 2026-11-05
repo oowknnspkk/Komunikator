@@ -10,15 +10,23 @@ function MainIndex() {
   const navigate = useNavigate();
 
   const handleLogout = async () => {
-    const { error } = await supabase.auth.signOut();
+  try {
+    const { error } = await supabase.auth.signOut({
+      scope: 'local'
+    });
 
     if (error) {
-      console.error(error.message);
+      console.error('Błąd wylogowania:', error.message);
+      alert(error.message);
       return;
     }
 
-    navigate('/login');
-  };
+    navigate('/main', { replace: true });
+
+  } catch (err) {
+    console.error('Błąd:', err);
+  }
+};
 
   const handleSend = () => {
     if (!message.trim()) return;
