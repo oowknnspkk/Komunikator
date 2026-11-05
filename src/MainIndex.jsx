@@ -7,11 +7,14 @@ function MainIndex() {
   return (
      <div class="main-page">
         <div class="PDFbox">
+          <button>Wyloguj sie</button>
+          <center><h1>PDF komunikator</h1></center>
             <div class="MessageBox">
                 
             </div>
             <input type="text" id="InputT" placeholder="Wpisz cos..."></input>
             <button id="Send">Wyślij wiadomość</button>
+          
         </div>
     </div>
   )
