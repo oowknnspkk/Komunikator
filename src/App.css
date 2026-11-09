@@ -1,26 +1,16 @@
 
-/* =================================
-   KOLORY
-================================= */
-
 :root {
   --primary: #294d73;
   --primary-hover: #1d3c5d;
-
   --background: #edf0f4;
   --white: #ffffff;
-
   --text: #293747;
   --muted: #778494;
-
   --border: #d9e0e8;
-
+  --blue-panel: #023d8ab6;
+  --turquoise: #48cae4;
   --shadow: 0 3px 14px rgba(30, 45, 65, 0.10);
 }
-
-/* =================================
-   RESET
-================================= */
 
 * {
   margin: 0;
@@ -35,41 +25,40 @@ body {
   background: var(--background);
 }
 
-/* =================================
-   GŁÓWNA STRONA
-================================= */
+button, input {
+  font: inherit;
+}
+
+/* GŁÓWNA STRONA */
 
 .main-page {
   min-height: 100vh;
   width: 100%;
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  padding: 30px 25px;
+  padding: 25px 20px 75px;
 }
 
-/* =================================
-   PRZYCISK WYLOGOWANIA
-================================= */
+.main-page h1 {
+  margin: 15px 0 25px;
+  color: #00b4d8;
+  font-size: 32px;
+  text-align: center;
+}
+
+/* WYLOGOWANIE */
 
 .main-page > button {
-  position: absolute;
-  bottom: 25px;
-  right: 30px;
-
+  position: fixed;
+  bottom: 20px;
+  right: 25px;
   padding: 10px 18px;
-
-  background: #ffffff;
+  background: var(--white);
   color: var(--primary);
-
   border: 1px solid var(--border);
-  border-radius: 5px;
-
-  font-size: 14px;
+  border-radius: 6px;
   font-weight: bold;
-
   cursor: pointer;
   transition: 0.2s;
 }
@@ -79,99 +68,103 @@ body {
   border-color: var(--primary);
 }
 
-/* =================================
-   TYTUŁ
-================================= */
+/* UKŁAD PANELI */
 
-.main-page h1 {
-  margin: 25px 0 30px;
-
-  color: #00b4d8;
-
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-
-  text-align: center;
+.LeftBox,
+.RightBox {
+  position: fixed;
+  top: 20px;
+  width: 230px;
+  height: calc(100vh - 40px);
+  padding: 20px;
+  background: var(--blue-panel);
+  border-top: 5px solid var(--turquoise);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  overflow-y: auto;
+  color: white;
 }
 
-/* =================================
-   GŁÓWNE OKNO CHATU
-================================= */
+.LeftBox {
+  left: 20px;
+}
+
+.RightBox {
+  right: 20px;
+}
+
+.LeftBox p {
+  margin-bottom: 25px;
+  font-size: 26px;
+  font-weight: bold;
+  color: white;
+}
+
+.LeftBox h3 {
+  margin-bottom: 15px;
+  font-size: 18px;
+  color: #caf0f8;
+}
+
+/* LISTA ZNAJOMYCH */
+
+.FriendsList {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 10px;
+  background: #0076b6;
+  border: 1px solid var(--turquoise);
+  border-radius: 10px;
+  color: white;
+}
+
+/* OKNO CZATU */
 
 .PDFbox {
-  width: 100%;
-  max-width: 850px;
-  height: 650px;
-  max-height: calc(100vh - 150px);
-
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-
-  padding: 22px;
   gap: 15px;
-
+  width: min(100%, 850px);
+  height: min(650px, calc(100vh - 150px));
+  padding: 22px;
   background: var(--white);
-
   border: 1px solid var(--border);
   border-radius: 10px;
-
   box-shadow: var(--shadow);
 }
 
-/* =================================
-   OBSZAR WIADOMOŚCI
-================================= */
+/* WIADOMOŚCI */
 
 .MessageBox {
   flex: 1;
   min-height: 0;
   width: 100%;
-
   padding: 20px;
-
+  overflow-y: auto;
+  overflow-wrap: anywhere;
   background: #f7f8fa;
-
   border: 1px solid #e1e5eb;
   border-radius: 7px;
-
   color: var(--text);
-
   text-align: left;
   font-size: 15px;
   line-height: 1.7;
-
-  overflow-y: auto;
-  overflow-wrap: anywhere;
 }
 
-/* =================================
-   POLE WPISYWANIA
-================================= */
+/* POLE WIADOMOŚCI */
 
 #InputT {
   width: 100%;
   min-height: 48px;
-
   padding: 13px 15px;
-
-  background: #ffffff;
-
+  background: white;
   border: 1px solid #cbd3dd;
   border-radius: 6px;
-
   color: var(--text);
-
-  font-family: Arial, sans-serif;
-  font-size: 15px;
-
   outline: none;
-  transition: border-color 0.2s;
-}
-
-#InputT::placeholder {
-  color: #9aa5b2;
+  font-size: 16px;
 }
 
 #InputT:focus {
@@ -179,145 +172,162 @@ body {
   box-shadow: 0 0 0 2px rgba(41, 77, 115, 0.1);
 }
 
-/* =================================
-   PRZYCISK WYSYŁANIA
-================================= */
+#InputT::placeholder {
+  color: #9aa5b2;
+}
+
+/* WYSYŁANIE */
 
 #Send {
   width: 100%;
   min-height: 47px;
-
   padding: 12px 18px;
-
   background: var(--primary);
-  color: #ffffff;
-
+  color: white;
   border: 1px solid var(--primary);
   border-radius: 6px;
-
-  font-size: 15px;
   font-weight: bold;
-
   cursor: pointer;
-  transition: background 0.2s;
 }
 
 #Send:hover {
   background: var(--primary-hover);
 }
 
-/* =================================
-   SCROLLBAR
-================================= */
+/* ZNAJOMI */
 
-.MessageBox::-webkit-scrollbar {
-  width: 7px;
+.FriendButton,
+.FriendActive {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  text-align: left;
+  cursor: pointer;
+  color: white;
 }
 
-.MessageBox::-webkit-scrollbar-thumb {
-  background: #cbd3dd;
+.FriendButton {
+  background: #292d3e;
+}
+
+.FriendActive {
+  background: #454b65;
+}
+
+.FriendButton:hover {
+  background: #393f55;
+}
+
+/* DODAWANIE ZNAJOMYCH */
+
+.AddFriendBox {
+  margin-top: 15px;
+  padding: 12px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+}
+
+.AddFriendBox input {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+/* PUSTY CZAT */
+
+.EmptyChat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+/* SCROLLOWANIE */
+
+.MessageBox::-webkit-scrollbar,
+.LeftBox::-webkit-scrollbar,
+.RightBox::-webkit-scrollbar {
+  width: 6px;
+}
+
+.MessageBox::-webkit-scrollbar-thumb,
+.LeftBox::-webkit-scrollbar-thumb,
+.RightBox::-webkit-scrollbar-thumb {
+  background: #aab5c2;
   border-radius: 5px;
 }
 
-.MessageBox::-webkit-scrollbar-thumb:hover {
-  background: #aab5c2;
-}
+/* TABLETY */
 
-/* =================================
-   TELEFONY I TABLETY
-================================= */
+@media (max-width: 1100px) {
+  .LeftBox,
+  .RightBox {
+    position: static;
+    width: 100%;
+    height: auto;
+    max-height: 250px;
+  }
 
-@media (max-width: 768px) {
   .main-page {
-    padding: 20px 12px;
-  }
-
-  .main-page h1 {
-    margin: 65px 0 20px;
-    font-size: 26px;
-  }
-
-  .main-page > button {
-    top: 15px;
-    right: 15px;
+    gap: 15px;
   }
 
   .PDFbox {
-    height: calc(100vh - 145px);
-    max-height: 700px;
-    padding: 14px;
+    width: 100%;
+    max-width: 850px;
+  }
+}
+
+/* TELEFONY */
+
+@media (max-width: 600px) {
+  .main-page {
+    padding: 12px 10px 75px;
     gap: 12px;
   }
 
-  .MessageBox {
-    padding: 13px;
-  }
-}
-
-@media (max-width: 400px) {
   .main-page h1 {
-    font-size: 23px;
+    margin: 10px 0;
+    font-size: 25px;
+  }
+
+  .main-page > button {
+    bottom: 10px;
+    right: 10px;
+    padding: 10px 14px;
+  }
+
+  .LeftBox,
+  .RightBox {
+    padding: 14px;
+    max-height: 200px;
+  }
+
+  .LeftBox p {
+    font-size: 22px;
+    margin-bottom: 15px;
   }
 
   .PDFbox {
-    padding: 10px;
+    height: 65vh;
+    min-height: 350px;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .MessageBox {
+    padding: 12px;
+    font-size: 14px;
   }
 
   #InputT,
   #Send {
-    font-size: 14px;
+    min-height: 46px;
+    font-size: 16px;
   }
-}
-/* LEWY PANEL */
-.LeftBox {
-  position: absolute;
-  left: 20px;
-  top: 20px;
-  width: 230px;
-  height: 700px;
-  padding: 20px;
-  background-color: #023d8ab6;
-  border-radius: 12px;
-  border-top: 5px solid #48cae4;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
-}
-
-.LeftBox p {
-  font-size: 30px;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 25px;
-}
-
-.LeftBox h3 {
-  font-size: 18px;
-  color: #caf0f8;
-  margin-bottom: 15px;
-}
-
-.FriendsList {
-  background-color: #0076b6;
-  border: 1px solid #48cae4;
-  border-radius: 10px;
-  display: grid;
-  place-items: center;
-  min-height: 60px;
-  padding: 10px;
-  gap: 10px;
-  color: #ffffff;
-}
-
-.RightBox{
-   position: absolute;
-  right: 20px;
-  top: 20px;
-  width: 230px;
-  height: 700px;
-  padding: 20px;
-  background-color: #023d8ab6;
-  border-radius: 12px;
-  border-top: 5px solid #48cae4;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  overflow-y: auto;
 }
