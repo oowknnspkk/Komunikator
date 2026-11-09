@@ -1,428 +1,474 @@
 
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from './supabaseClient';
-import './App.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "./supabaseClient";
 
 function MainIndex() {
-  // Podstawowe dane
-  const [username, setUsername] = useState('');
-  const [message, setMessage] = useState('');
-  const [messages, setMessages] = useState([]);
+    const navigate = useNavigate();
 
-  // Znajomi
-  const [friends, setFriends] = useState([]);
-  const [selectedFriend, setSelectedFriend] = useState(null);
+    const [user, setUser] = useState(null);
+    const [username, setUsername] = useState("");
 
-  // Dodawanie znajomych
-  const [showAddFriend, setShowAddFriend] = useState(false);
-  const [friendUsername, setFriendUsername] = useState('');
-  const [friendError, setFriendError] = useState('');
-  const [friendSuccess, setFriendSuccess] = useState('');
-  const [addingFriend, setAddingFriend] = useState(false);
+    const [friends, setFriends] = useState([]);
+    const [selectedFriend, setSelectedFriend] = useState(null);
 
-  const [loadingMessages, setLoadingMessages] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [message, setMessage] = useState("");
 
-  const navigate = useNavigate();
+    const [showAddFriend, setShowAddFriend] = useState(false);
+    const [friendUsername, setFriendUsername] = useState("");
+    const [friendError, setFriendError] = useState("");
+    const [friendSuccess, setFriendSuccess] = useState("");
 
-  // Pobieranie profilu użytkownika
-  useEffect(() => {
-    const loadProfile = async () => {
-      const { data: { user }, error } =
-        await supabase.auth.getUser();
+    const [loadingMessages, setLoadingMessages] = useState(false);
+    const [addingFriend, setAddingFriend] = useState(false);
 
-      if (error || !user) {
-        navigate('/login', { replace: true });
-        return;
-      }
+    // POBIERANIE UŻYTKOWNIKA
+    useEffect(() => {
+        const loadUser = async () => {
+            const { data, error } = await supabase.auth.getUser();
 
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('id', user.id)
-        .single();
+            if (error || !data.user) {
+                navigate("/login");
+                return;
+            }
 
-      if (profileError) {
-        console.error('Błąd profilu:', profileError);
-        return;
-      }
+            setUser(data.user);
 
-      setUsername(profile.username);
-    };
+            const { data: profile, error: profileError } = await supabase
+                .from("profiles")
+                .select("username")
+                .eq("id", data.user.id)
+                .single();
 
-    loadProfile();
-  }, [navigate]);
+            if (!profileError && profile) {
+                setUsername(profile.username);
+            }
+        };
 
-  // Pobieranie znajomych
-  const loadFriends = async () => {
-    const { data: { user }, error: userError } =
-      await supabase.auth.getUser();
+        loadUser();
+    }, [navigate]);
 
-    if (userError || !user) return;
+    // POBIERANIE ZNAJOMYCH
+    const loadFriends = async () => {
+        const { data: authData } = await supabase.auth.getUser();
+        const currentUser = authData.user;
 
-    const { data: relations, error } = await supabase
-      .from('friends')
-      .select('*')
-      .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
+        if (!currentUser) return;
 
-    if (error) {
-      console.error('Błąd pobierania znajomych:', error);
-      return;
-    }
-
-    if (!relations || relations.length === 0) {
-      setFriends([]);
-      return;
-    }
-
-    const friendIds = relations.map(relation =>
-      relation.user_id === user.id
-        ? relation.friend_id
-        : relation.user_id
-    );
-
-    const { data: profiles, error: profileError } = await supabase
-      .from('profiles')
-      .select('id, username')
-      .in('id', friendIds);
-
-    if (profileError) {
-      console.error('Błąd pobierania profili:', profileError);
-      return;
-    }
-
-    setFriends(profiles || []);
-  };
-
-  // Automatyczne pobieranie znajomych
-  useEffect(() => {
-    loadFriends();
-  }, []);
-
-  // Dodawanie znajomego
-  const handleAddFriend = async (e) => {
-    e.preventDefault();
-
-    const cleanUsername = friendUsername.trim();
-
-    if (!cleanUsername) return;
-
-    setAddingFriend(true);
-    setFriendError('');
-    setFriendSuccess('');
-
-    try {
-      const { data: { user }, error: userError } =
-        await supabase.auth.getUser();
-
-      if (userError || !user) {
-        throw new Error('Musisz być zalogowany!');
-      }
-
-      // Wyszukiwanie użytkownika
-      const { data: profile, error: searchError } = await supabase
-        .from('profiles')
-        .select('id, username')
-        .ilike('username', cleanUsername)
-        .maybeSingle();
-
-      if (searchError) throw searchError;
-
-      if (!profile) {
-        throw new Error('Nie znaleziono takiego użytkownika.');
-      }
-
-      if (profile.id === user.id) {
-        throw new Error('Nie możesz dodać samego siebie!');
-      }
-
-      // Sprawdzanie, czy znajomy już istnieje
-      const { data: existing, error: existingError } = await supabase
-        .from('friends')
-        .select('id')
-        .or(
-          `and(user_id.eq.${user.id},friend_id.eq.${profile.id}),and(user_id.eq.${profile.id},friend_id.eq.${user.id})`
-        )
-        .maybeSingle();
-
-      if (existingError) throw existingError;
-
-      if (existing) {
-        throw new Error('Ten użytkownik jest już Twoim znajomym.');
-      }
-
-      // Zapisywanie znajomego
-      const { error: insertError } = await supabase
-        .from('friends')
-        .insert({
-          user_id: user.id,
-          friend_id: profile.id
-        });
-
-      if (insertError) throw insertError;
-
-      setFriendSuccess(`Dodano ${profile.username} do znajomych!`);
-      setFriendUsername('');
-
-      await loadFriends();
-
-    } catch (err) {
-      setFriendError(err.message);
-    } finally {
-      setAddingFriend(false);
-    }
-  };
-
-  // Pobieranie prywatnych wiadomości
-  useEffect(() => {
-    const loadMessages = async () => {
-      setMessages([]);
-
-      if (!selectedFriend) return;
-
-      setLoadingMessages(true);
-
-      try {
-        const { data: { user }, error: userError } =
-          await supabase.auth.getUser();
-
-        if (userError || !user) return;
-
-        const { data, error } = await supabase
-          .from('messages')
-          .select('*')
-          .or(
-            `and(sender_id.eq.${user.id},recipient_id.eq.${selectedFriend.id}),and(sender_id.eq.${selectedFriend.id},recipient_id.eq.${user.id})`
-          )
-          .order('created_at', { ascending: true });
+        const { data: relations, error } = await supabase
+            .from("friends")
+            .select("*")
+            .or(
+                `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
+            );
 
         if (error) {
-          console.error('Błąd pobierania wiadomości:', error);
-          return;
+            console.error("Błąd pobierania znajomych:", error);
+            return;
         }
 
-        setMessages(data || []);
+        const friendIds = relations.map((relation) =>
+            relation.user_id === currentUser.id
+                ? relation.friend_id
+                : relation.user_id
+        );
 
-      } finally {
-        setLoadingMessages(false);
-      }
+        if (friendIds.length === 0) {
+            setFriends([]);
+            return;
+        }
+
+        const { data: profiles, error: profilesError } = await supabase
+            .from("profiles")
+            .select("id, username")
+            .in("id", friendIds);
+
+        if (profilesError) {
+            console.error("Błąd pobierania profili:", profilesError);
+            return;
+        }
+
+        setFriends(profiles || []);
     };
 
-    loadMessages();
-  }, [selectedFriend]);
+    useEffect(() => {
+        if (user) {
+            loadFriends();
+        }
+    }, [user]);
 
-  // Wysyłanie prywatnej wiadomości
-  const handleSend = async () => {
-    if (!message.trim() || !selectedFriend) return;
+    // DODAWANIE ZNAJOMEGO
+    const handleAddFriend = async (e) => {
+        e.preventDefault();
 
-    const content = message.trim();
+        setFriendError("");
+        setFriendSuccess("");
 
-    const { data: { user }, error: userError } =
-      await supabase.auth.getUser();
+        const cleanUsername = friendUsername.trim();
 
-    if (userError || !user) {
-      alert('Musisz być zalogowany!');
-      return;
-    }
+        if (!cleanUsername) {
+            setFriendError("Wpisz nazwę użytkownika.");
+            return;
+        }
 
-    const { data, error } = await supabase
-      .from('messages')
-      .insert({
-        sender_id: user.id,
-        recipient_id: selectedFriend.id,
-        content: content
-      })
-      .select()
-      .single();
+        if (!user) return;
 
-    if (error) {
-      console.error('Błąd wysyłania:', error);
-      alert(error.message);
-      return;
-    }
+        setAddingFriend(true);
 
-    setMessages(prev => [...prev, data]);
-    setMessage('');
-  };
+        try {
+            const { data: profile, error: profileError } = await supabase
+                .from("profiles")
+                .select("id, username")
+                .ilike("username", cleanUsername)
+                .maybeSingle();
 
-  // Wylogowywanie
-  const handleLogout = async () => {
-    try {
-      const { error } = await supabase.auth.signOut({
-        scope: 'local'
-      });
+            if (profileError) {
+                throw profileError;
+            }
 
-      if (error) {
-        console.error('Błąd wylogowania:', error.message);
-        alert(error.message);
-        return;
-      }
+            if (!profile) {
+                setFriendError("Nie znaleziono takiego użytkownika.");
+                return;
+            }
 
-      navigate('/login', { replace: true });
+            if (profile.id === user.id) {
+                setFriendError("Nie możesz dodać samego siebie.");
+                return;
+            }
 
-    } catch (err) {
-      console.error('Błąd:', err);
-    }
-  };
+            const { data: existing, error: existingError } = await supabase
+                .from("friends")
+                .select("id")
+                .or(
+                    `and(user_id.eq.${user.id},friend_id.eq.${profile.id}),and(user_id.eq.${profile.id},friend_id.eq.${user.id})`
+                )
+                .maybeSingle();
 
-  return (
-    <div className="main-page">
+            if (existingError) {
+                throw existingError;
+            }
 
-      <button onClick={handleLogout}>
-        Wyloguj się
-      </button>
+            if (existing) {
+                setFriendError("Ten użytkownik jest już Twoim znajomym.");
+                return;
+            }
 
-      <center>
-        <h1>PDF komunikator</h1>
-        <h2>Witaj, {username || 'Użytkowniku'}! 👋</h2>
-      </center>
+            const { error: insertError } = await supabase
+                .from("friends")
+                .insert({
+                    user_id: user.id,
+                    friend_id: profile.id
+                });
 
-      {/* LEWY PANEL */}
-      <div className="LeftBox">
+            if (insertError) {
+                throw insertError;
+            }
 
-        <p>Panel główny</p>
+            setFriendSuccess(`Dodano użytkownika ${profile.username}!`);
+            setFriendUsername("");
 
-        <h1>Znajomi:</h1>
+            await loadFriends();
 
-        <button
-          onClick={() => {
-            setShowAddFriend(!showAddFriend);
-            setFriendError('');
-            setFriendSuccess('');
-          }}
-        >
-          + Dodaj znajomego
-        </button>
+        } catch (error) {
+            console.error("Błąd dodawania znajomego:", error);
+            setFriendError("Nie udało się dodać znajomego.");
+        } finally {
+            setAddingFriend(false);
+        }
+    };
 
-        {/* OKNO DODAWANIA */}
-        {showAddFriend && (
-          <div className="AddFriendBox">
+    // WIADOMOŚCI + SUPABASE REALTIME
+    useEffect(() => {
+        if (!selectedFriend || !user) {
+            setMessages([]);
+            return;
+        }
 
-            <h3>Dodaj znajomego</h3>
+        let channel;
+        let active = true;
 
-            <form onSubmit={handleAddFriend}>
+        const loadMessages = async () => {
+            setLoadingMessages(true);
+            setMessages([]);
 
-              <input
-                type="text"
-                placeholder="Nazwa użytkownika..."
-                value={friendUsername}
-                onChange={(e) => setFriendUsername(e.target.value)}
-                required
-              />
+            // Najpierw pobieramy wcześniejsze wiadomości
+            const { data, error } = await supabase
+                .from("messages")
+                .select("*")
+                .or(
+                    `and(sender_id.eq.${user.id},recipient_id.eq.${selectedFriend.id}),and(sender_id.eq.${selectedFriend.id},recipient_id.eq.${user.id})`
+                )
+                .order("created_at", { ascending: true });
 
-              <button type="submit" disabled={addingFriend}>
-                {addingFriend ? 'Dodawanie...' : 'Dodaj'}
-              </button>
+            if (!active) return;
 
-            </form>
+            if (error) {
+                console.error("Błąd pobierania wiadomości:", error);
+            } else {
+                setMessages(data || []);
+            }
 
-            {friendError && (
-              <p className="error">{friendError}</p>
-            )}
+            setLoadingMessages(false);
 
-            {friendSuccess && (
-              <p className="success">{friendSuccess}</p>
-            )}
+            // Nasłuchiwanie nowych wiadomości
+            channel = supabase
+                .channel(`chat-${user.id}-${selectedFriend.id}`)
+                .on(
+                    "postgres_changes",
+                    {
+                        event: "INSERT",
+                        schema: "public",
+                        table: "messages"
+                    },
+                    (payload) => {
+                        const newMessage = payload.new;
 
-          </div>
-        )}
+                        const isOurConversation =
+                            (newMessage.sender_id === user.id &&
+                                newMessage.recipient_id === selectedFriend.id) ||
+                            (newMessage.sender_id === selectedFriend.id &&
+                                newMessage.recipient_id === user.id);
 
-        {/* LISTA ZNAJOMYCH */}
-        <div className="FriendsList">
+                        if (isOurConversation) {
+                            setMessages((previous) => {
+                                if (
+                                    previous.some(
+                                        (msg) => msg.id === newMessage.id
+                                    )
+                                ) {
+                                    return previous;
+                                }
 
-          {friends.length === 0 ? (
-            <p>Nie masz jeszcze znajomych.</p>
-          ) : (
-            friends.map((friend) => (
-              <button
-                key={friend.id}
-                onClick={() => setSelectedFriend(friend)}
-                className={
-                  selectedFriend?.id === friend.id
-                    ? 'FriendActive'
-                    : 'FriendButton'
-                }
-              >
-                {friend.username}
-              </button>
-            ))
-          )}
+                                return [...previous, newMessage].sort(
+                                    (a, b) =>
+                                        new Date(a.created_at) -
+                                        new Date(b.created_at)
+                                );
+                            });
+                        }
+                    }
+                )
+                .subscribe((status) => {
+                    console.log("Status Realtime:", status);
+                });
+        };
 
-        </div>
+        loadMessages();
 
-      </div>
+        // Wyłączamy nasłuchiwanie po zmianie rozmowy
+        return () => {
+            active = false;
 
-      {/* GŁÓWNY CZAT */}
-      <div className="PDFbox">
+            if (channel) {
+                supabase.removeChannel(channel);
+            }
+        };
+    }, [selectedFriend, user]);
 
-        {selectedFriend ? (
-          <>
-            <h2>
-              Rozmowa z {selectedFriend.username}
-            </h2>
+    // WYSYŁANIE WIADOMOŚCI
+    const handleSend = async (e) => {
+        e.preventDefault();
 
-            <div className="MessageBox">
+        const cleanMessage = message.trim();
 
-              {loadingMessages ? (
-                <p>Ładowanie wiadomości...</p>
-              ) : messages.length === 0 ? (
-                <p>Nie ma jeszcze wiadomości. Napisz pierwszą!</p>
-              ) : (
-                messages.map((msg) => (
-                  <p key={msg.id}>
-                    <strong>
-                      {msg.sender_id === selectedFriend.id
-                        ? selectedFriend.username
-                        : 'Ty'}:
-                    </strong>{' '}
-                    {msg.content}
-                  </p>
-                ))
-              )}
+        if (!cleanMessage || !selectedFriend || !user) return;
+
+        const { data, error } = await supabase
+            .from("messages")
+            .insert({
+                sender_id: user.id,
+                recipient_id: selectedFriend.id,
+                content: cleanMessage
+            })
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Błąd wysyłania wiadomości:", error);
+            return;
+        }
+
+        // Dodajemy wiadomość lokalnie.
+        // Realtime nie doda jej drugi raz dzięki sprawdzeniu ID.
+        setMessages((previous) => {
+            if (previous.some((msg) => msg.id === data.id)) {
+                return previous;
+            }
+
+            return [...previous, data];
+        });
+
+        setMessage("");
+    };
+
+    // WYLOGOWANIE
+    const handleLogout = async () => {
+        await supabase.auth.signOut({ scope: "local" });
+        navigate("/login");
+    };
+
+    return (
+        <div className="main-page">
+
+            <h1>PDF Komunikator</h1>
+
+            {/* LEWY PANEL */}
+            <div className="LeftBox">
+
+                <p>Witaj, {username || "Użytkowniku"}!</p>
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        setShowAddFriend(!showAddFriend);
+                        setFriendError("");
+                        setFriendSuccess("");
+                    }}
+                >
+                    {showAddFriend ? "Anuluj" : "+ Dodaj znajomego"}
+                </button>
+
+                {showAddFriend && (
+                    <div className="AddFriendBox">
+
+                        <form onSubmit={handleAddFriend}>
+
+                            <input
+                                type="text"
+                                placeholder="Nazwa użytkownika"
+                                value={friendUsername}
+                                onChange={(e) =>
+                                    setFriendUsername(e.target.value)
+                                }
+                            />
+
+                            <button type="submit" disabled={addingFriend}>
+                                {addingFriend ? "Dodawanie..." : "Dodaj"}
+                            </button>
+
+                        </form>
+
+                        {friendError && (
+                            <p>{friendError}</p>
+                        )}
+
+                        {friendSuccess && (
+                            <p>{friendSuccess}</p>
+                        )}
+
+                    </div>
+                )}
+
+                <h3>Znajomi</h3>
+
+                <div className="FriendsList">
+
+                    {friends.length === 0 && (
+                        <p>Nie masz jeszcze znajomych.</p>
+                    )}
+
+                    {friends.map((friend) => (
+                        <button
+                            type="button"
+                            key={friend.id}
+                            className={
+                                selectedFriend?.id === friend.id
+                                    ? "FriendActive"
+                                    : "FriendButton"
+                            }
+                            onClick={() => setSelectedFriend(friend)}
+                        >
+                            {friend.username}
+                        </button>
+                    ))}
+
+                </div>
 
             </div>
 
-            <input
-              type="text"
-              id="InputT"
-              placeholder="Napisz wiadomość..."
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') handleSend();
-              }}
-            />
+            {/* GŁÓWNY CZAT */}
+            <div className="PDFbox">
 
-            <button id="Send" onClick={handleSend}>
-              Wyślij wiadomość
+                {selectedFriend ? (
+                    <>
+                        <h2>
+                            Rozmowa z {selectedFriend.username}
+                        </h2>
+
+                        <div className="MessageBox">
+
+                            {loadingMessages && (
+                                <p>Ładowanie wiadomości...</p>
+                            )}
+
+                            {!loadingMessages && messages.length === 0 && (
+                                <div className="EmptyChat">
+                                    <p>Nie ma jeszcze wiadomości.</p>
+                                    <p>Rozpocznij rozmowę!</p>
+                                </div>
+                            )}
+
+                            {messages.map((msg) => (
+                                <div key={msg.id}>
+                                    <strong>
+                                        {msg.sender_id === user?.id
+                                            ? "Ty"
+                                            : selectedFriend.username}
+                                    </strong>
+
+                                    <p>{msg.content}</p>
+
+                                    <small>
+                                        {new Date(
+                                            msg.created_at
+                                        ).toLocaleString("pl-PL")}
+                                    </small>
+                                </div>
+                            ))}
+
+                        </div>
+
+                        <form onSubmit={handleSend}>
+
+                            <input
+                                id="InputT"
+                                type="text"
+                                placeholder="Napisz wiadomość..."
+                                value={message}
+                                onChange={(e) =>
+                                    setMessage(e.target.value)
+                                }
+                            />
+
+                            <button id="Send" type="submit">
+                                Wyślij
+                            </button>
+
+                        </form>
+                    </>
+                ) : (
+                    <div className="EmptyChat">
+                        <h2>Witaj w komunikatorze!</h2>
+                        <p>Wybierz znajomego, aby rozpocząć rozmowę.</p>
+                    </div>
+                )}
+
+            </div>
+
+            {/* PRAWY PANEL */}
+            <div className="RightBox">
+                <h3>Panel dodatkowy</h3>
+                <p>Test</p>
+            </div>
+
+            {/* WYLOGOWANIE */}
+            <button type="button" onClick={handleLogout}>
+                Wyloguj się
             </button>
-          </>
-        ) : (
-          <div className="EmptyChat">
-            <h2>Witaj w PDF Komunikator!</h2>
-            <p>Wybierz znajomego z listy, aby rozpocząć rozmowę.</p>
-          </div>
-        )}
 
-      </div>
-
-      {/* PRAWY PANEL */}
-      <div className="RightBox">
-
-        <p>Kanały</p>
-
-        <h1>Lista dostępnych kanałów:</h1>
-
-        <div className="ServersList">
-          <h3>Test</h3>
-          <h3>Test</h3>
-          <h3>Test</h3>
         </div>
-
-      </div>
-
-    </div>
-  );
+    );
 }
 
 export default MainIndex;
