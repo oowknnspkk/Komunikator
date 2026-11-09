@@ -6,6 +6,7 @@ import './App.css';
 function MainIndex() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  const [username, setUsername] = useState('');
   // SQL DATABASE SCRIPT:
   useEffect(() => {
     const loadMessages = async () => {
@@ -16,7 +17,17 @@ function MainIndex() {
         console.error('Nie znaleziono użytkownika:', userError);
         return;
       }
+    const { data: profile, error: profileError } = await supabase
+  .from('profiles')
+  .select('username')
+  .eq('id', user.id)
+  .single();
 
+if (profileError) {
+  console.error('Błąd pobierania profilu:', profileError);
+} else {
+  setUsername(profile.username);
+}
       const { data, error } = await supabase
         .from('messages')
         .select('*')
@@ -70,6 +81,10 @@ function MainIndex() {
 
       <center>
         <h1>PDF komunikator</h1>
+
+        <h2>
+    Witaj, {username || 'Użytkowniku'}!
+      </h2>
       </center>
 
       <div className="PDFbox">
