@@ -80,8 +80,8 @@ function MainIndex() {
       </div>
       </div>
       <div class="RightBox">
-          <p>Panel głowny</p>
-          <h1>Znajomi:</h1>
+          <p>Kanały</p>
+          <h1>Lista dostępnych kanałów:</h1>
         <div class="ServersList">
         <h3>Test</h3> 
         <h3>Test</h3> 
