@@ -1,3 +1,4 @@
+
 import { useState } from 'react'
 import {
   BrowserRouter,
@@ -14,9 +15,9 @@ import './RL.css'
 import ChangePassword from './ChangePassword'
 
 function Register() {
-const [username, setUsername] = useState('')
-const [email, setEmail] = useState('')
-const [password, setPassword] = useState('')
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -28,10 +29,25 @@ const [password, setPassword] = useState('')
     setMessage('')
     setError('')
 
+    const cleanUsername = username.trim()
+
+    if (!/^[A-Za-z0-9_]{3,20}$/.test(cleanUsername)) {
+      setError(
+        'Nazwa użytkownika musi mieć 3–20 znaków i zawierać tylko litery, cyfry lub _.'
+      )
+      setLoading(false)
+      return
+    }
+
     try {
       const { data, error } = await supabase.auth.signUp({
-        email,
+        email: email.trim(),
         password,
+        options: {
+          data: {
+            username: cleanUsername
+          }
+        }
       })
 
       if (error) throw error
@@ -40,6 +56,8 @@ const [password, setPassword] = useState('')
         setMessage(
           'Konto zostało utworzone! Sprawdź swoją skrzynkę e-mail, aby potwierdzić rejestrację.'
         )
+
+        setUsername('')
         setEmail('')
         setPassword('')
       }
@@ -53,6 +71,7 @@ const [password, setPassword] = useState('')
   return (
     <div className="page">
       <div className="register-card">
+
         <div className="logo">PDF Komunikator</div>
 
         <h1>Utwórz konto</h1>
@@ -62,6 +81,21 @@ const [password, setPassword] = useState('')
         </p>
 
         <form onSubmit={handleRegister}>
+
+          <label>Nazwa użytkownika</label>
+
+          <input
+            type="text"
+            placeholder="Np. Kamil123"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            minLength={3}
+            maxLength={20}
+            pattern="[A-Za-z0-9_]+"
+            title="Używaj tylko liter, cyfr i znaku podkreślenia"
+            required
+          />
+
           <label>Adres e-mail</label>
 
           <input
@@ -83,20 +117,28 @@ const [password, setPassword] = useState('')
             required
           />
 
-          {error && <div className="error">{error}</div>}
-          {message && <div className="success">{message}</div>}
+          {error && (
+            <div className="error">{error}</div>
+          )}
+
+          {message && (
+            <div className="success">{message}</div>
+          )}
 
           <button type="submit" disabled={loading}>
             {loading ? 'Tworzenie konta...' : 'Zarejestruj się'}
           </button>
+
         </form>
 
         <p className="login-text">
           Masz już konto? <Link to="/login">Zaloguj się</Link>
         </p>
+
         <Link to="/change-password">
-  Zmień hasło
-</Link>
+          Zmień hasło
+        </Link>
+
       </div>
     </div>
   )
@@ -110,8 +152,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/main" element={<MainIndex />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/change-password" element={<ChangePassword />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )
