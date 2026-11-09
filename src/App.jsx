@@ -86,7 +86,7 @@ function Register() {
 
           <input
             type="text"
-            placeholder="Np. Kamil123"
+            placeholder="Np. cwel123"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             minLength={3}
