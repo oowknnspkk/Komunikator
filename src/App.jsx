@@ -14,8 +14,9 @@ import './RL.css'
 import ChangePassword from './ChangePassword'
 
 function Register() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+const [username, setUsername] = useState('')
+const [email, setEmail] = useState('')
+const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
