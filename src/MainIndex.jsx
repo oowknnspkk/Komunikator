@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from './supabaseClient';
 import './App.css';
@@ -6,7 +6,33 @@ import './App.css';
 function MainIndex() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
+  // SQL DATABASE SCRIPT:
+  useEffect(() => {
+    const loadMessages = async () => {
+      const { data: { user }, error: userError } =
+        await supabase.auth.getUser();
 
+      if (userError || !user) {
+        console.error('Nie znaleziono użytkownika:', userError);
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from('messages')
+        .select('*')
+        .order('created_at', { ascending: true });
+
+      if (error) {
+        console.error('Błąd pobierania wiadomości:', error);
+        return;
+      }
+
+      setMessages(data);
+    };
+
+    loadMessages();
+  }, []);
+  
   const navigate = useNavigate();
 
   const handleLogout = async () => {
