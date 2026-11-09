@@ -79,6 +79,16 @@ function MainIndex() {
           <h3>Kamil Łobaza</h3> 
       </div>
       </div>
+      <div class="RightBox">
+          <p>Panel głowny</p>
+          <h1>Znajomi:</h1>
+        <div class="ServersList">
+        <h3>Test</h3> 
+        <h3>Test</h3> 
+        <h3>Test</h3> 
+      </div>
+      </div>
+      
     </div>
   );
 }
