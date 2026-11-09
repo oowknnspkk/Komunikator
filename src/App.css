@@ -307,3 +307,17 @@ body {
   gap: 10px;
   color: #ffffff;
 }
+
+.RightBox{
+   position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 230px;
+  height: 700px;
+  padding: 20px;
+  background-color: #023d8ab6;
+  border-radius: 12px;
+  border-top: 5px solid #48cae4;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+}
