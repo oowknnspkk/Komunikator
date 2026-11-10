@@ -39,6 +39,7 @@ button, input {
   align-items: start;
   gap: 20px;
   padding: 25px 20px 75px;
+  background-color: #b5179e
 }
 
 .main-page h1 {
