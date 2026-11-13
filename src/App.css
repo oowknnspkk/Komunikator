@@ -39,7 +39,7 @@ button, input {
   align-items: start;
   gap: 20px;
   padding: 25px 20px 75px;
-  background-color: #b5179e
+  background-color: #b5179e;
 }
 
 .main-page h1 {
@@ -170,10 +170,17 @@ button, input {
   border-radius: 7px;
   font-size: 15px;
   line-height: 1.7;
+
+  /* USTAWIENIA PRZEWIJANIA */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  scroll-behavior: smooth;
 }
 
 .MessageBox > div {
   margin-bottom: 14px;
+  flex-shrink: 0;
 }
 
 .MessageBox small {
