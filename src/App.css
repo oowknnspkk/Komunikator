@@ -159,23 +159,20 @@ button, input {
 /* WIADOMOŚCI */
 
 .MessageBox {
-  flex: 1;
-  min-height: 0;
-  width: 100%;
-  padding: 20px;
-  overflow-y: auto;
-  overflow-wrap: anywhere;
-  background: #f7f8fa;
-  border: 1px solid #e1e5eb;
-  border-radius: 7px;
-  font-size: 15px;
-  line-height: 1.7;
-
-  /* USTAWIENIA PRZEWIJANIA */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  scroll-behavior: smooth;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    padding: 20px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    overflow-wrap: anywhere;
+    background: #f7f8fa;
+    border: 1px solid #e1e5eb;
+    border-radius: 7px;
+    font-size: 15px;
+    line-height: 1.7;
+    scroll-behavior: smooth;
+    overflow-anchor: none;
 }
 
 .MessageBox > div {
