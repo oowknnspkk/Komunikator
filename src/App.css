@@ -2,12 +2,25 @@
 :root {
   --primary: #294d73;
   --primary-hover: #1d3c5d;
+<<<<<<< HEAD
   --background: #edf0f4;
+=======
+
+  --background: #e9eff5;
+>>>>>>> 43a384d (zmiana styli)
   --white: #ffffff;
   --text: #293747;
   --border: #d9e0e8;
+<<<<<<< HEAD
   --turquoise: #48cae4;
   --panel: #023d8ab6;
+=======
+
+  --panel: #1d3557;
+  --panel-light: #27496d;
+  --turquoise: #48cae4;
+
+>>>>>>> 43a384d (zmiana styli)
   --shadow: 0 3px 14px rgba(30, 45, 65, 0.10);
 }
 
@@ -32,6 +45,7 @@ button, input {
 
 .main-page {
   min-height: 100vh;
+<<<<<<< HEAD
   display: grid;
   grid-template-columns: 230px minmax(0, 850px) 230px;
   grid-template-rows: auto 1fr;
@@ -40,6 +54,15 @@ button, input {
   gap: 20px;
   padding: 25px 20px 75px;
   background-color: #b5179e;
+=======
+  width: 100%;
+  background: #1d3557;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 30px 25px;
+>>>>>>> 43a384d (zmiana styli)
 }
 
 .main-page h1 {
@@ -344,9 +367,56 @@ button, input {
     padding: 12px;
     font-size: 14px;
   }
+<<<<<<< HEAD
+=======
+}
+/* LEWY PANEL */
+.LeftBox {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  width: 230px;
+  height: 700px;
+  padding: 20px;
+
+  background: var(--panel);
+
+  border-radius: 12px;
+  border-top: 5px solid var(--turquoise);
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+  overflow-y: auto;
+  color: white;
+}
+>>>>>>> 43a384d (zmiana styli)
 
   .main-page > button {
     bottom: 10px;
     right: 10px;
   }
 }
+<<<<<<< HEAD
+=======
+
+.LeftBox h3 {
+  font-size: 18px;
+  color: #caf0f8;
+  margin-bottom: 15px;
+}
+
+.FriendsList {
+  background: var(--panel-light);
+  border: 1px solid var(--turquoise);
+  border-radius: 10px;
+
+  display: grid;
+  place-items: center;
+
+  min-height: 60px;
+  padding: 10px;
+  gap: 10px;
+
+  color: white;
+}
+>>>>>>> 43a384d (zmiana styli)
