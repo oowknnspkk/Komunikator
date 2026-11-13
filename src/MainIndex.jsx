@@ -23,17 +23,18 @@ function MainIndex() {
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [addingFriend, setAddingFriend] = useState(false);
 
-// REFERENCJA DO OKNA CZATU
-const messageBoxRef = useRef(null);
+    // REFERENCJA DO OKNA CZATU
+    const messageBoxRef = useRef(null);
 
-// AUTOMATYCZNE PRZEWIJANIE DO OSTATNIEJ WIADOMOŚCI
-useLayoutEffect(() => {
-    const box = messageBoxRef.current;
+    // AUTOMATYCZNE PRZEWIJANIE NA OSTATNIĄ WIADOMOŚĆ
+    useLayoutEffect(() => {
+        const box = messageBoxRef.current;
 
-    if (!box || loadingMessages) return;
+        if (!box || loadingMessages) return;
 
-    box.scrollTop = box.scrollHeight;
-}, [messages, loadingMessages, selectedFriend]);
+        box.scrollTop = box.scrollHeight;
+    }, [messages, loadingMessages, selectedFriend]);
+
     // POBIERANIE UŻYTKOWNIKA
     useEffect(() => {
         const loadUser = async () => {
@@ -104,9 +105,7 @@ useLayoutEffect(() => {
     };
 
     useEffect(() => {
-        if (user) {
-            loadFriends();
-        }
+        if (user) loadFriends();
     }, [user]);
 
     // DODAWANIE ZNAJOMEGO
@@ -134,9 +133,7 @@ useLayoutEffect(() => {
                 .ilike("username", cleanUsername)
                 .maybeSingle();
 
-            if (profileError) {
-                throw profileError;
-            }
+            if (profileError) throw profileError;
 
             if (!profile) {
                 setFriendError("Nie znaleziono takiego użytkownika.");
@@ -156,9 +153,7 @@ useLayoutEffect(() => {
                 )
                 .maybeSingle();
 
-            if (existingError) {
-                throw existingError;
-            }
+            if (existingError) throw existingError;
 
             if (existing) {
                 setFriendError("Ten użytkownik jest już Twoim znajomym.");
@@ -172,9 +167,7 @@ useLayoutEffect(() => {
                     friend_id: profile.id
                 });
 
-            if (insertError) {
-                throw insertError;
-            }
+            if (insertError) throw insertError;
 
             setFriendSuccess(`Dodano użytkownika ${profile.username}!`);
             setFriendUsername("");
@@ -189,7 +182,7 @@ useLayoutEffect(() => {
         }
     };
 
-    // WIADOMOŚCI + SUPABASE REALTIME
+    // POBIERANIE WIADOMOŚCI I SUPABASE REALTIME
     useEffect(() => {
         if (!selectedFriend || !user) {
             setMessages([]);
@@ -203,7 +196,6 @@ useLayoutEffect(() => {
             setLoadingMessages(true);
             setMessages([]);
 
-            // POBIERANIE WCZEŚNIEJSZYCH WIADOMOŚCI
             const { data, error } = await supabase
                 .from("messages")
                 .select("*")
@@ -222,7 +214,6 @@ useLayoutEffect(() => {
 
             setLoadingMessages(false);
 
-            // NASŁUCHIWANIE NOWYCH WIADOMOŚCI
             channel = supabase
                 .channel(`chat-${user.id}-${selectedFriend.id}`)
                 .on(
@@ -267,7 +258,6 @@ useLayoutEffect(() => {
 
         loadMessages();
 
-        // WYŁĄCZENIE NASŁUCHIWANIA PO ZMIANIE ROZMOWY
         return () => {
             active = false;
 
@@ -300,13 +290,15 @@ useLayoutEffect(() => {
             return;
         }
 
-        // DODANIE WIADOMOŚCI LOKALNIE
         setMessages((previous) => {
             if (previous.some((msg) => msg.id === data.id)) {
                 return previous;
             }
 
-            return [...previous, data];
+            return [...previous, data].sort(
+                (a, b) =>
+                    new Date(a.created_at) - new Date(b.created_at)
+            );
         });
 
         setMessage("");
@@ -359,13 +351,8 @@ useLayoutEffect(() => {
 
                         </form>
 
-                        {friendError && (
-                            <p>{friendError}</p>
-                        )}
-
-                        {friendSuccess && (
-                            <p>{friendSuccess}</p>
-                        )}
+                        {friendError && <p>{friendError}</p>}
+                        {friendSuccess && <p>{friendSuccess}</p>}
 
                     </div>
                 )}
@@ -419,15 +406,15 @@ useLayoutEffect(() => {
                                 </div>
                             )}
 
-                           {messages.map((msg) => (
-    <div
-        key={msg.id}
-        id={`message-${msg.id}`}
-    >
-        <strong>
-            {msg.sender_id === user?.id
-                ? "Ty"
-                : selectedFriend.username}
+                            {messages.map((msg) => (
+                                <div
+                                    key={msg.id}
+                                    id={`message-${msg.id}`}
+                                >
+                                    <strong>
+                                        {msg.sender_id === user?.id
+                                            ? "Ty"
+                                            : selectedFriend.username}
                                     </strong>
 
                                     <p>{msg.content}</p>
@@ -439,9 +426,6 @@ useLayoutEffect(() => {
                                     </small>
                                 </div>
                             ))}
-
-                            {/* ELEMENT NA KOŃCU CZATU */}
-                            <div ref={messagesEndRef}></div>
 
                         </div>
 
