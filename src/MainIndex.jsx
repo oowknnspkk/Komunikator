@@ -1,5 +1,5 @@
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 
@@ -23,17 +23,17 @@ function MainIndex() {
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [addingFriend, setAddingFriend] = useState(false);
 
-    // REFERENCJA DO KOŃCA CZATU
-    const messagesEndRef = useRef(null);
+// REFERENCJA DO OKNA CZATU
+const messageBoxRef = useRef(null);
 
-    // AUTOMATYCZNE PRZEWIJANIE NA SAM DÓŁ
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({
-            behavior: "smooth",
-            block: "end"
-        });
-    }, [messages, loadingMessages]);
+// AUTOMATYCZNE PRZEWIJANIE DO OSTATNIEJ WIADOMOŚCI
+useLayoutEffect(() => {
+    const box = messageBoxRef.current;
 
+    if (!box || loadingMessages) return;
+
+    box.scrollTop = box.scrollHeight;
+}, [messages, loadingMessages, selectedFriend]);
     // POBIERANIE UŻYTKOWNIKA
     useEffect(() => {
         const loadUser = async () => {
@@ -406,7 +406,7 @@ function MainIndex() {
                             Rozmowa z {selectedFriend.username}
                         </h2>
 
-                        <div className="MessageBox">
+                        <div className="MessageBox" ref={messageBoxRef}>
 
                             {loadingMessages && (
                                 <p>Ładowanie wiadomości...</p>
@@ -419,12 +419,15 @@ function MainIndex() {
                                 </div>
                             )}
 
-                            {messages.map((msg) => (
-                                <div key={msg.id}>
-                                    <strong>
-                                        {msg.sender_id === user?.id
-                                            ? "Ty"
-                                            : selectedFriend.username}
+                           {messages.map((msg) => (
+    <div
+        key={msg.id}
+        id={`message-${msg.id}`}
+    >
+        <strong>
+            {msg.sender_id === user?.id
+                ? "Ty"
+                : selectedFriend.username}
                                     </strong>
 
                                     <p>{msg.content}</p>
