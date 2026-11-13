@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "./supabaseClient";
 
@@ -22,6 +22,17 @@ function MainIndex() {
 
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [addingFriend, setAddingFriend] = useState(false);
+
+    // REFERENCJA DO KOŃCA CZATU
+    const messagesEndRef = useRef(null);
+
+    // AUTOMATYCZNE PRZEWIJANIE NA SAM DÓŁ
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "end"
+        });
+    }, [messages, loadingMessages]);
 
     // POBIERANIE UŻYTKOWNIKA
     useEffect(() => {
@@ -192,7 +203,7 @@ function MainIndex() {
             setLoadingMessages(true);
             setMessages([]);
 
-            // Najpierw pobieramy wcześniejsze wiadomości
+            // POBIERANIE WCZEŚNIEJSZYCH WIADOMOŚCI
             const { data, error } = await supabase
                 .from("messages")
                 .select("*")
@@ -211,7 +222,7 @@ function MainIndex() {
 
             setLoadingMessages(false);
 
-            // Nasłuchiwanie nowych wiadomości
+            // NASŁUCHIWANIE NOWYCH WIADOMOŚCI
             channel = supabase
                 .channel(`chat-${user.id}-${selectedFriend.id}`)
                 .on(
@@ -256,7 +267,7 @@ function MainIndex() {
 
         loadMessages();
 
-        // Wyłączamy nasłuchiwanie po zmianie rozmowy
+        // WYŁĄCZENIE NASŁUCHIWANIA PO ZMIANIE ROZMOWY
         return () => {
             active = false;
 
@@ -289,8 +300,7 @@ function MainIndex() {
             return;
         }
 
-        // Dodajemy wiadomość lokalnie.
-        // Realtime nie doda jej drugi raz dzięki sprawdzeniu ID.
+        // DODANIE WIADOMOŚCI LOKALNIE
         setMessages((previous) => {
             if (previous.some((msg) => msg.id === data.id)) {
                 return previous;
@@ -426,6 +436,9 @@ function MainIndex() {
                                     </small>
                                 </div>
                             ))}
+
+                            {/* ELEMENT NA KOŃCU CZATU */}
+                            <div ref={messagesEndRef}></div>
 
                         </div>
 
