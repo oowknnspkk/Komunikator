@@ -19,6 +19,7 @@ function MainIndex() {
     const [friendSuccess, setFriendSuccess] = useState("");
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [addingFriend, setAddingFriend] = useState(false);
+    const [channels, setChannels] = usestate([])
 
     useLayoutEffect(() => {
         const box = messageBoxRef.current;
