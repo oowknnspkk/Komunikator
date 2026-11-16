@@ -5,37 +5,26 @@ import { supabase } from "./supabaseClient";
 
 function MainIndex() {
     const navigate = useNavigate();
+    const messageBoxRef = useRef(null);
 
     const [user, setUser] = useState(null);
     const [username, setUsername] = useState("");
-
     const [friends, setFriends] = useState([]);
     const [selectedFriend, setSelectedFriend] = useState(null);
-
     const [messages, setMessages] = useState([]);
     const [message, setMessage] = useState("");
-
     const [showAddFriend, setShowAddFriend] = useState(false);
     const [friendUsername, setFriendUsername] = useState("");
     const [friendError, setFriendError] = useState("");
     const [friendSuccess, setFriendSuccess] = useState("");
-
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [addingFriend, setAddingFriend] = useState(false);
 
-    // REFERENCJA DO OKNA CZATU
-    const messageBoxRef = useRef(null);
-
-    // AUTOMATYCZNE PRZEWIJANIE NA OSTATNIĄ WIADOMOŚĆ
     useLayoutEffect(() => {
         const box = messageBoxRef.current;
-
-        if (!box || loadingMessages) return;
-
-        box.scrollTop = box.scrollHeight;
+        if (box && !loadingMessages) box.scrollTop = box.scrollHeight;
     }, [messages, loadingMessages, selectedFriend]);
 
-    // POBIERANIE UŻYTKOWNIKA
     useEffect(() => {
         const loadUser = async () => {
             const { data, error } = await supabase.auth.getUser();
@@ -47,71 +36,60 @@ function MainIndex() {
 
             setUser(data.user);
 
-            const { data: profile, error: profileError } = await supabase
+            const { data: profile } = await supabase
                 .from("profiles")
                 .select("username")
                 .eq("id", data.user.id)
                 .single();
 
-            if (!profileError && profile) {
-                setUsername(profile.username);
-            }
+            if (profile) setUsername(profile.username);
         };
 
         loadUser();
     }, [navigate]);
 
-    // POBIERANIE ZNAJOMYCH
     const loadFriends = async () => {
-        const { data: authData } = await supabase.auth.getUser();
-        const currentUser = authData.user;
-
-        if (!currentUser) return;
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
 
         const { data: relations, error } = await supabase
             .from("friends")
             .select("*")
-            .or(
-                `user_id.eq.${currentUser.id},friend_id.eq.${currentUser.id}`
-            );
+            .or(`user_id.eq.${user.id},friend_id.eq.${user.id}`);
 
         if (error) {
-            console.error("Błąd pobierania znajomych:", error);
+            console.error(error);
             return;
         }
 
-        const friendIds = relations.map((relation) =>
-            relation.user_id === currentUser.id
-                ? relation.friend_id
-                : relation.user_id
+        const ids = relations.map(r =>
+            r.user_id === user.id ? r.friend_id : r.user_id
         );
 
-        if (friendIds.length === 0) {
+        if (!ids.length) {
             setFriends([]);
             return;
         }
 
-        const { data: profiles, error: profilesError } = await supabase
+        const { data, error: profileError } = await supabase
             .from("profiles")
             .select("id, username")
-            .in("id", friendIds);
+            .in("id", ids);
 
-        if (profilesError) {
-            console.error("Błąd pobierania profili:", profilesError);
+        if (profileError) {
+            console.error(profileError);
             return;
         }
 
-        setFriends(profiles || []);
+        setFriends(data || []);
     };
 
     useEffect(() => {
         if (user) loadFriends();
     }, [user]);
 
-    // DODAWANIE ZNAJOMEGO
     const handleAddFriend = async (e) => {
         e.preventDefault();
-
         setFriendError("");
         setFriendSuccess("");
 
@@ -127,14 +105,13 @@ function MainIndex() {
         setAddingFriend(true);
 
         try {
-            const { data: profile, error: profileError } = await supabase
+            const { data: profile, error } = await supabase
                 .from("profiles")
                 .select("id, username")
                 .ilike("username", cleanUsername)
                 .maybeSingle();
 
-            if (profileError) throw profileError;
-
+            if (error) throw error;
             if (!profile) {
                 setFriendError("Nie znaleziono takiego użytkownika.");
                 return;
@@ -148,9 +125,7 @@ function MainIndex() {
             const { data: existing, error: existingError } = await supabase
                 .from("friends")
                 .select("id")
-                .or(
-                    `and(user_id.eq.${user.id},friend_id.eq.${profile.id}),and(user_id.eq.${profile.id},friend_id.eq.${user.id})`
-                )
+                .or(`and(user_id.eq.${user.id},friend_id.eq.${profile.id}),and(user_id.eq.${profile.id},friend_id.eq.${user.id})`)
                 .maybeSingle();
 
             if (existingError) throw existingError;
@@ -162,27 +137,21 @@ function MainIndex() {
 
             const { error: insertError } = await supabase
                 .from("friends")
-                .insert({
-                    user_id: user.id,
-                    friend_id: profile.id
-                });
+                .insert({ user_id: user.id, friend_id: profile.id });
 
             if (insertError) throw insertError;
 
             setFriendSuccess(`Dodano użytkownika ${profile.username}!`);
             setFriendUsername("");
-
             await loadFriends();
-
         } catch (error) {
-            console.error("Błąd dodawania znajomego:", error);
+            console.error(error);
             setFriendError("Nie udało się dodać znajomego.");
         } finally {
             setAddingFriend(false);
         }
     };
 
-    // POBIERANIE WIADOMOŚCI I SUPABASE REALTIME
     useEffect(() => {
         if (!selectedFriend || !user) {
             setMessages([]);
@@ -199,112 +168,80 @@ function MainIndex() {
             const { data, error } = await supabase
                 .from("messages")
                 .select("*")
-                .or(
-                    `and(sender_id.eq.${user.id},recipient_id.eq.${selectedFriend.id}),and(sender_id.eq.${selectedFriend.id},recipient_id.eq.${user.id})`
-                )
+                .or(`and(sender_id.eq.${user.id},recipient_id.eq.${selectedFriend.id}),and(sender_id.eq.${selectedFriend.id},recipient_id.eq.${user.id})`)
                 .order("created_at", { ascending: true });
 
             if (!active) return;
 
-            if (error) {
-                console.error("Błąd pobierania wiadomości:", error);
-            } else {
-                setMessages(data || []);
-            }
+            if (error) console.error(error);
+            else setMessages(data || []);
 
             setLoadingMessages(false);
 
             channel = supabase
                 .channel(`chat-${user.id}-${selectedFriend.id}`)
-                .on(
-                    "postgres_changes",
-                    {
-                        event: "INSERT",
-                        schema: "public",
-                        table: "messages"
-                    },
-                    (payload) => {
-                        const newMessage = payload.new;
+                .on("postgres_changes", {
+                    event: "INSERT",
+                    schema: "public",
+                    table: "messages"
+                }, ({ new: msg }) => {
+                    const valid =
+                        (msg.sender_id === user.id && msg.recipient_id === selectedFriend.id) ||
+                        (msg.sender_id === selectedFriend.id && msg.recipient_id === user.id);
 
-                        const isOurConversation =
-                            (newMessage.sender_id === user.id &&
-                                newMessage.recipient_id === selectedFriend.id) ||
-                            (newMessage.sender_id === selectedFriend.id &&
-                                newMessage.recipient_id === user.id);
-
-                        if (isOurConversation) {
-                            setMessages((previous) => {
-                                if (
-                                    previous.some(
-                                        (msg) => msg.id === newMessage.id
-                                    )
-                                ) {
-                                    return previous;
-                                }
-
-                                return [...previous, newMessage].sort(
-                                    (a, b) =>
-                                        new Date(a.created_at) -
-                                        new Date(b.created_at)
-                                );
-                            });
-                        }
+                    if (valid) {
+                        setMessages(prev =>
+                            prev.some(m => m.id === msg.id)
+                                ? prev
+                                : [...prev, msg].sort((a, b) =>
+                                    new Date(a.created_at) - new Date(b.created_at)
+                                )
+                        );
                     }
-                )
-                .subscribe((status) => {
-                    console.log("Status Realtime:", status);
-                });
+                })
+                .subscribe();
         };
 
         loadMessages();
 
         return () => {
             active = false;
-
-            if (channel) {
-                supabase.removeChannel(channel);
-            }
+            if (channel) supabase.removeChannel(channel);
         };
     }, [selectedFriend, user]);
 
-    // WYSYŁANIE WIADOMOŚCI
     const handleSend = async (e) => {
         e.preventDefault();
 
-        const cleanMessage = message.trim();
-
-        if (!cleanMessage || !selectedFriend || !user) return;
+        const content = message.trim();
+        if (!content || !selectedFriend || !user) return;
 
         const { data, error } = await supabase
             .from("messages")
             .insert({
                 sender_id: user.id,
                 recipient_id: selectedFriend.id,
-                content: cleanMessage
+                content
             })
             .select()
             .single();
 
         if (error) {
-            console.error("Błąd wysyłania wiadomości:", error);
+            console.error(error);
             return;
         }
 
-        setMessages((previous) => {
-            if (previous.some((msg) => msg.id === data.id)) {
-                return previous;
-            }
-
-            return [...previous, data].sort(
-                (a, b) =>
+        setMessages(prev =>
+            prev.some(m => m.id === data.id)
+                ? prev
+                : [...prev, data].sort((a, b) =>
                     new Date(a.created_at) - new Date(b.created_at)
-            );
-        });
+                )
+        );
 
         setMessage("");
     };
 
-    // WYLOGOWANIE
     const handleLogout = async () => {
         await supabase.auth.signOut({ scope: "local" });
         navigate("/login");
@@ -312,92 +249,61 @@ function MainIndex() {
 
     return (
         <div className="main-page">
-
             <h1>PDF Komunikator</h1>
 
-            {/* LEWY PANEL */}
             <div className="LeftBox">
-
                 <p>Witaj, {username || "Użytkowniku"}!</p>
 
-                <button
-                    type="button"
-                    onClick={() => {
-                        setShowAddFriend(!showAddFriend);
-                        setFriendError("");
-                        setFriendSuccess("");
-                    }}
-                >
+                <button type="button" onClick={() => {
+                    setShowAddFriend(!showAddFriend);
+                    setFriendError("");
+                    setFriendSuccess("");
+                }}>
                     {showAddFriend ? "Anuluj" : "+ Dodaj znajomego"}
                 </button>
 
                 {showAddFriend && (
                     <div className="AddFriendBox">
-
                         <form onSubmit={handleAddFriend}>
-
                             <input
-                                type="text"
-                                placeholder="Nazwa użytkownika"
                                 value={friendUsername}
-                                onChange={(e) =>
-                                    setFriendUsername(e.target.value)
-                                }
+                                onChange={e => setFriendUsername(e.target.value)}
+                                placeholder="Nazwa użytkownika"
                             />
-
                             <button type="submit" disabled={addingFriend}>
                                 {addingFriend ? "Dodawanie..." : "Dodaj"}
                             </button>
-
                         </form>
-
                         {friendError && <p>{friendError}</p>}
                         {friendSuccess && <p>{friendSuccess}</p>}
-
                     </div>
                 )}
 
                 <h3>Znajomi</h3>
 
                 <div className="FriendsList">
+                    {friends.length === 0 && <p>Nie masz jeszcze znajomych.</p>}
 
-                    {friends.length === 0 && (
-                        <p>Nie masz jeszcze znajomych.</p>
-                    )}
-
-                    {friends.map((friend) => (
+                    {friends.map(friend => (
                         <button
-                            type="button"
                             key={friend.id}
-                            className={
-                                selectedFriend?.id === friend.id
-                                    ? "FriendActive"
-                                    : "FriendButton"
-                            }
+                            type="button"
+                            className={selectedFriend?.id === friend.id ? "FriendActive" : "FriendButton"}
                             onClick={() => setSelectedFriend(friend)}
                         >
                             {friend.username}
                         </button>
                     ))}
-
                 </div>
-
             </div>
 
-            {/* GŁÓWNY CZAT */}
             <div className="PDFbox">
-
                 {selectedFriend ? (
                     <>
-                        <h2>
-                            Rozmowa z {selectedFriend.username}
-                        </h2>
+                        <h2>Rozmowa z {selectedFriend.username}</h2>
 
                         <div className="MessageBox" ref={messageBoxRef}>
-
-                            {loadingMessages && (
-                                <p>Ładowanie wiadomości...</p>
-                            )}
+                            {loadingMessages && <p>Ładowanie wiadomości...</p>}
 
                             {!loadingMessages && messages.length === 0 && (
                                 <div className="EmptyChat">
@@ -406,68 +312,40 @@ function MainIndex() {
                                 </div>
                             )}
 
-                            {messages.map((msg) => (
-                                <div
-                                    key={msg.id}
-                                    id={`message-${msg.id}`}
-                                >
-                                    <strong>
-                                        {msg.sender_id === user?.id
-                                            ? "Ty"
-                                            : selectedFriend.username}
-                                    </strong>
-
+                            {messages.map(msg => (
+                                <div key={msg.id}>
+                                    <strong>{msg.sender_id === user?.id ? "Ty" : selectedFriend.username}</strong>
                                     <p>{msg.content}</p>
-
-                                    <small>
-                                        {new Date(
-                                            msg.created_at
-                                        ).toLocaleString("pl-PL")}
-                                    </small>
+                                    <small>{new Date(msg.created_at).toLocaleString("pl-PL")}</small>
                                 </div>
                             ))}
-
                         </div>
 
                         <form onSubmit={handleSend}>
-
                             <input
                                 id="InputT"
-                                type="text"
-                                placeholder="Napisz wiadomość..."
                                 value={message}
-                                onChange={(e) =>
-                                    setMessage(e.target.value)
-                                }
+                                onChange={e => setMessage(e.target.value)}
+                                placeholder="Napisz wiadomość..."
                             />
-
-                            <button id="Send" type="submit">
-                                Wyślij
-                            </button>
-
+                            <button id="Send" type="submit">Wyślij</button>
                         </form>
                     </>
                 ) : (
                     <div className="EmptyChat">
                         <h2>Witaj w komunikatorze!</h2>
-                        <p>Wybierz znajomego, lub kanał aby rozpocząć rozmowę.</p>
+                        <p>Wybierz znajomego lub kanał, aby rozpocząć rozmowę.</p>
                     </div>
                 )}
-
             </div>
 
-            {/* PRAWY PANEL */}
             <div className="RightBox">
                 <h3>Kanały:</h3>
-                <p>Nie masz zadnych kanałów</p>
-                <button>Utwórz kanał</button>
+                <p>Nie masz żadnych kanałów</p>
+                <button type="button">Utwórz kanał</button>
             </div>
 
-            {/* WYLOGOWANIE */}
-            <button type="button" onClick={handleLogout}>
-                Wyloguj się
-            </button>
-
+            <button type="button" onClick={handleLogout}>Wyloguj się</button>
         </div>
     );
 }
