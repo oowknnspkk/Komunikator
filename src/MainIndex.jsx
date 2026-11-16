@@ -263,7 +263,19 @@ function MainIndex() {
         }
         loadChannels();
     }
-        
+
+    const loadChannels = async () => {
+    const { data } = await supabase
+        .from("channels")
+        .select("*");
+
+    setChannels(data || []);
+};
+
+useEffect(() => {
+    loadChannels();
+}, []);
+    
     return (
         <div className="main-page">
             <h1>PDF Komunikator</h1>
@@ -357,10 +369,29 @@ function MainIndex() {
             </div>
 
             <div className="RightBox">
-                <h3>Kanały:</h3>
-                <p>Nie masz żadnych kanałów</p>
-                <button type="button">Utwórz kanał</button>
-            </div>
+    <h3>Kanały:</h3>
+
+    <button type="button" onClick={addChannel}>
+        + Utwórz kanał
+    </button>
+
+    <div className="ChannelsList">
+        {channels.length === 0 ? (
+            <p>Nie masz żadnych kanałów.</p>
+        ) : (
+            channels.map(channel => (
+                <button
+                    key={channel.id}
+                    type="button"
+                    className="ChannelButton"
+                    onClick={() => console.log("Wybrano kanał:", channel.name)}
+                >
+                    # {channel.name}
+                </button>
+            ))
+        )}
+    </div>
+</div>
 
             <button type="button" onClick={handleLogout}>Wyloguj się</button>
         </div>
