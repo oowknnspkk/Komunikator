@@ -450,7 +450,7 @@ function MainIndex() {
                 ) : (
                     <div className="EmptyChat">
                         <h2>Witaj w komunikatorze!</h2>
-                        <p>Wybierz znajomego, aby rozpocząć rozmowę.</p>
+                        <p>Wybierz znajomego, lub kanał aby rozpocząć rozmowę.</p>
                     </div>
                 )}
 
