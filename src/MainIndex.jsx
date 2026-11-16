@@ -247,7 +247,23 @@ function MainIndex() {
         await supabase.auth.signOut({ scope: "local" });
         navigate("/login");
     };
+    
+    // funcjonalność tworzenia kanałów
+    const addChannel = async () => {
+        const name = prompt("podaj nazwe kanału");
+        if(!name.trim()) return;
 
+        const {error} = await supabase
+            .form("channels")
+            .insert({name: name.trim()});
+
+        if (error) {
+            alert ("Błąd, nie mozna stworzyc kanału")
+            return;
+        }
+        loadChannels();
+    }
+        
     return (
         <div className="main-page">
             <h1>PDF Komunikator</h1>
