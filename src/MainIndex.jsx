@@ -458,8 +458,9 @@ function MainIndex() {
 
             {/* PRAWY PANEL */}
             <div className="RightBox">
-                <h3>Panel dodatkowy</h3>
-                <p>Test</p>
+                <h3>Kanały:</h3>
+                <p>Nie masz zadnych kanałów</p>
+                <button>Utwórz kanał</button>
             </div>
 
             {/* WYLOGOWANIE */}
