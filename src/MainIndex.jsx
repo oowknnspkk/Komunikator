@@ -327,8 +327,9 @@ const loadChannels = async () => {
                     ))}
                 </div>
             </div>
-            <div className="BoxStyles">
+            
             <div className="PDFbox">
+                <div className="BoxStyles">
                 {selectedFriend ? (
                     <>
                         <h2>Rozmowa z {selectedFriend.username}</h2>
@@ -368,8 +369,9 @@ const loadChannels = async () => {
                         <p>Wybierz znajomego lub kanał, aby rozpocząć rozmowę.</p>
                     </div>
                 )}
+                    </div>
             </div>
-    </div>
+    
             <div className="RightBox">
     <h3>Kanały:</h3>
 
