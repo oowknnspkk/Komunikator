@@ -327,7 +327,7 @@ const loadChannels = async () => {
                     ))}
                 </div>
             </div>
-
+            <div className="BoxStyles">
             <div className="PDFbox">
                 {selectedFriend ? (
                     <>
@@ -369,7 +369,7 @@ const loadChannels = async () => {
                     </div>
                 )}
             </div>
-
+    </div>
             <div className="RightBox">
     <h3>Kanały:</h3>
 
