@@ -19,7 +19,7 @@ function MainIndex() {
     const [friendSuccess, setFriendSuccess] = useState("");
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [addingFriend, setAddingFriend] = useState(false);
-    const [channels, setChannels] = usestate([])
+    const [channels, setChannels] = useState([]);
 
     useLayoutEffect(() => {
         const box = messageBoxRef.current;
@@ -264,17 +264,19 @@ function MainIndex() {
         loadChannels();
     }
 
-    const loadChannels = async () => {
-    const { data } = await supabase
+const loadChannels = async () => {
+    const { data, error } = await supabase
         .from("channels")
-        .select("*");
+        .select("*")
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        console.error("Błąd pobierania kanałów:", error);
+        return;
+    }
 
     setChannels(data || []);
 };
-
-useEffect(() => {
-    loadChannels();
-}, []);
     
     return (
         <div className="main-page">
