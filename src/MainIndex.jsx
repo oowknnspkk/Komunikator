@@ -281,7 +281,7 @@ const loadChannels = async () => {
     return (
         <div className="main-page">
             <h1>PDF Komunikator</h1>
-    <div className="BoxStyles">
+    
             <div className="LeftBox">
                 <p>Witaj, {username || "Użytkowniku"}!</p>
 
@@ -397,7 +397,7 @@ const loadChannels = async () => {
     </div>
                 
 </div>
-         </div>
+     
 
             <button type="button" onClick={handleLogout}>Wyloguj się</button>
         </div>
