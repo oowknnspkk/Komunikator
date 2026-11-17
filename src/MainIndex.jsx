@@ -281,7 +281,7 @@ const loadChannels = async () => {
     return (
         <div className="main-page">
             <h1>PDF Komunikator</h1>
-
+    <div className="BoxStyles">
             <div className="LeftBox">
                 <p>Witaj, {username || "Użytkowniku"}!</p>
 
@@ -329,7 +329,7 @@ const loadChannels = async () => {
             </div>
             
             <div className="PDFbox">
-                <div className="BoxStyles">
+                
                 {selectedFriend ? (
                     <>
                         <h2>Rozmowa z {selectedFriend.username}</h2>
@@ -369,7 +369,7 @@ const loadChannels = async () => {
                         <p>Wybierz znajomego lub kanał, aby rozpocząć rozmowę.</p>
                     </div>
                 )}
-                    </div>
+                   
             </div>
     
             <div className="RightBox">
@@ -395,7 +395,9 @@ const loadChannels = async () => {
             ))
         )}
     </div>
+                
 </div>
+         </div>
 
             <button type="button" onClick={handleLogout}>Wyloguj się</button>
         </div>
